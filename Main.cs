@@ -42,9 +42,9 @@ namespace DSPMarker
         public static bool showList = true;
 
 
-        public static bool alwaysDisplay = true;
-        public static bool throughPlanet = true;
-        public static bool ShowArrow = true;
+        //public static bool alwaysDisplay = true;
+        //public static bool throughPlanet = true;
+        //public static bool ShowArrow = true;
 
         //public static float signHeight = 3f;
         //public static float signSize = 0f;
@@ -109,6 +109,7 @@ namespace DSPMarker
         public void Update()
         {
             MarkerPool.Update();
+            //test.Update();
         }
 
 

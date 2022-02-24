@@ -29,27 +29,23 @@ namespace DSPMarker
     internal class Patch
     {
         //オプション変更後の情報ウインドウ位置修正
-        [HarmonyPatch(typeof(UIOptionWindow), "ApplyOptions")]
-        public static class UIOptionWindowa_ApplyOptions_Postfix
+        [HarmonyPostfix,HarmonyPatch(typeof(UIOptionWindow), "ApplyOptions")]
+        public static void UIOptionWindowa_ApplyOptions_Postfix(UIOptionWindow __instance)
         {
-            [HarmonyPostfix]
-            public static void Postfix(UIOptionWindow __instance)
-            {
-                //UI解像度計算
-                int UIheight = DSPGame.globalOption.uiLayoutHeight;
-                int UIwidth = UIheight * Screen.width / Screen.height;
+            //UI解像度計算
+            int UIheight = DSPGame.globalOption.uiLayoutHeight;
+            int UIwidth = UIheight * Screen.width / Screen.height;
                 
-                //位置の調整
-                MarkerList.listBase.transform.localPosition = new Vector3(UIwidth / 2 - 60, UIheight / 2 - 70, 0);
-                int maxRow = (UIheight - 270 - 115) / MarkerList.boxSize;
-                for (int i = 0; i < Main.maxMarker; i++)
-                {
-                    float scale = (float)MarkerList.boxSize / 70;
-                    MarkerList.boxMarker[i].transform.localScale = new Vector3(scale, scale, 1);
-                    int x = 15 - MarkerList.boxSize * (i / maxRow);
-                    int y = -80 - MarkerList.boxSize * (i % maxRow);
-                    MarkerList.boxMarker[i].transform.localPosition = new Vector3(x, y, 0);
-                }
+            //位置の調整
+            MarkerList.listBase.transform.localPosition = new Vector3(UIwidth / 2 - 60, UIheight / 2 - 70, 0);
+            int maxRow = (UIheight - 270 - 115) / MarkerList.boxSize;
+            for (int i = 0; i < Main.maxMarker; i++)
+            {
+                float scale = (float)MarkerList.boxSize / 70;
+                MarkerList.boxMarker[i].transform.localScale = new Vector3(scale, scale, 1);
+                int x = 15 - MarkerList.boxSize * (i / maxRow);
+                int y = -80 - MarkerList.boxSize * (i % maxRow);
+                MarkerList.boxMarker[i].transform.localPosition = new Vector3(x, y, 0);
 
             }
         }

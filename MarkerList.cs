@@ -225,6 +225,41 @@ namespace DSPMarker
                 {
                     MarkerEditor.Close();
                 }
+            }else
+            {
+                var num = GameMain.localPlanet.id * 100 + i;
+                //オーダー設定
+                OrderNode order = new OrderNode();
+                order.type = EOrderType.Move;
+                order.target = MarkerPool.markerPool[num].pos;
+                order.objType = EObjectType.Entity;
+                order.objId = 0;
+                order.objPos = MarkerPool.markerPool[num].pos;
+                GameMain.mainPlayer.orders.currentOrder = order;
+ 
+                CircleGizmo circleGizmo = CircleGizmo.Create(0, order.target, 0.27f);
+                circleGizmo.relateObject = order;
+                circleGizmo.color = MarkerPool.markerPool[num].color;
+                circleGizmo.fadeInScale = 1.8f;
+                circleGizmo.fadeInTime = 0.15f;
+                circleGizmo.fadeOutScale = 1.8f;
+                circleGizmo.fadeOutTime = 0.15f;
+                circleGizmo.alphaMultiplier = 0.5f;
+                circleGizmo.multiplier = 3f;
+                circleGizmo.Open();
+                GameMain.mainPlayer.gizmo.orderGizmos.Add(circleGizmo);
+
+                LineGizmo lineGizmo = LineGizmo.Create(0, order.target, GameMain.mainPlayer.position);
+                lineGizmo.color = MarkerPool.markerPool[num].color;
+                lineGizmo.relateObject = order;
+                lineGizmo.autoRefresh = true;
+                lineGizmo.width = 2f;
+                lineGizmo.alphaMultiplier = 0.5f;
+                lineGizmo.multiplier = 3f;
+                lineGizmo.spherical = true;
+                lineGizmo.Open();
+                GameMain.mainPlayer.gizmo.orderGizmos.Add(lineGizmo);
+
             }
 
 

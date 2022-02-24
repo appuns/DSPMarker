@@ -53,6 +53,7 @@ namespace DSPMarker
         public static Color[] color = new Color[7];
 
         public static int id;
+        public static Vector3 pos;
         public static int iconID1;
         public static int iconID2;
         public static Color baseColor;
@@ -67,8 +68,8 @@ namespace DSPMarker
         //フラグ
         public static void Open(int num)
         {
-            var pos = MarkerList.boxMarker[num].transform.localPosition;
-            window.transform.localPosition = new Vector3(pos.x + 637, pos.y + 530, 0);
+            var pos1 = MarkerList.boxMarker[num].transform.localPosition;
+            window.transform.localPosition = new Vector3(pos1.x + 637, pos1.y + 530, 0);
             int serchNum = GameMain.localPlanet.id * 100 + num;
             Sprite sprite1;
             Sprite sprite2;
@@ -77,6 +78,7 @@ namespace DSPMarker
             if (MarkerPool.markerPool.ContainsKey(serchNum))
             {
                 MarkerPool.Marker marker = MarkerPool.markerPool[serchNum];
+                pos = marker.pos;
                 iconID1 = marker.icon1ID;
                 iconID2 = marker.icon2ID;
                 sprite1 = LDB.signals.IconSprite(marker.icon1ID);
@@ -380,11 +382,9 @@ namespace DSPMarker
         {
 
             var realRadius = GameMain.localPlanet.realRadius;
-            Vector3 pos = GameMain.mainPlayer.position.normalized * (realRadius + 10f);
  
             MarkerPool.Marker marker = new MarkerPool.Marker();
             //marker.planetID = GameMain.localPlanet.id;
-            marker.pos = pos;
             marker.icon1ID = iconID1;
             marker.icon2ID = iconID2;
             marker.color = baseColor;
@@ -396,10 +396,12 @@ namespace DSPMarker
             
             if(MarkerPool.markerPool.ContainsKey(num))
             {
+                marker.pos = pos;
                 MarkerPool.markerPool[num] = marker;
             }
             else
             {
+                marker.pos = GameMain.mainPlayer.position;
                 MarkerPool.markerPool.Add(num, marker);
             }
             LogManager.Logger.LogInfo("------------------------------------------------------------------num : " + num);
@@ -470,19 +472,19 @@ namespace DSPMarker
         }
         public static void onClickCheckBox1()
         {
-            Main.alwaysDisplay = !Main.alwaysDisplay;
-            MarkerEditor.checkBox1.transform.Find("checked").gameObject.GetComponent<Image>().enabled = Main.alwaysDisplay;
+            alwaysDisplay = !alwaysDisplay;
+            MarkerEditor.checkBox1.transform.Find("checked").gameObject.GetComponent<Image>().enabled = alwaysDisplay;
         }
 
         public static void onClickCheckBox2()
         {
-            Main.throughPlanet = !Main.throughPlanet;
-            MarkerEditor.checkBox2.transform.Find("checked").gameObject.GetComponent<Image>().enabled = Main.throughPlanet;
+            throughPlanet = !throughPlanet;
+            MarkerEditor.checkBox2.transform.Find("checked").gameObject.GetComponent<Image>().enabled = throughPlanet;
         }
         public static void onClickCheckBox3()
         {
-            Main.ShowArrow = !Main.ShowArrow;
-            MarkerEditor.checkBox3.transform.Find("checked").gameObject.GetComponent<Image>().enabled = Main.ShowArrow;
+            ShowArrow = !ShowArrow;
+            MarkerEditor.checkBox3.transform.Find("checked").gameObject.GetComponent<Image>().enabled = ShowArrow;
         }
 
         public static void onEndEditDescBox(string str)
