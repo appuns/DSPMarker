@@ -26,7 +26,9 @@ namespace DSPMarker
 {
     public class MarkerPool : MonoBehaviour
     {
+        public static Dictionary<int, List<int>> markerIdInPlanet = new Dictionary<int, List<int>>();
         public static Dictionary<int, Marker> markerPool = new Dictionary<int, Marker>();
+        //public static Dictionary<int, Marker> markerPoolLocal = new Dictionary<int, Marker>();
 
         //public static int Main.maxMarker = 20;
         public static bool markerEnable = true;
@@ -38,11 +40,12 @@ namespace DSPMarker
         public static Image[] icon2s = new Image[Main.maxMarker];
         public static Text[] decs = new Text[Main.maxMarker];
 
+        public static bool markerCreated = false;
 
 
         public struct Marker
         {
-            //public int planetID;
+            public int planetID;
             public Vector3 pos;
             public int icon1ID;
             public int icon2ID;
@@ -53,7 +56,18 @@ namespace DSPMarker
             public bool ShowArrow;
         }
 
-
+        //public static int CountInLocalPlanet()
+        //{
+        //    var count = 0;
+        //    for (int i = 0; i < markerPool.Count; i++)
+        //    {
+        //        if (markerPool[i].planetID == GameMain.localPlanet.id)
+        //        {
+        //            count++;
+        //        }
+        //    }
+        //    return count;
+        //}
 
 
         public static void Create()
@@ -68,48 +82,57 @@ namespace DSPMarker
                 decs[i] = markers[i].transform.Find("round/pinBaseText").GetComponent<Text>();
             }
 
+            markerCreated = true;
 
         }
+
+
 
         public static void Refresh()
         {
+            int planetId = GameMain.localPlanet.id;
 
-            for (int i = 0; i < Main.maxMarker; i++)
+            if (!MarkerPool.markerIdInPlanet.ContainsKey(planetId))
             {
-                var num = GameMain.localPlanet.id * 100 + i;
-                if (markerPool.ContainsKey(num))
-                {
-                    Base[i].color = markerPool[num].color;
-                    var halfColor = new Color(markerPool[num].color.r * 0.3f, markerPool[num].color.g * 0.3f, markerPool[num].color.b * 0.3f, 1f);
-                    BaseRound[i].color = halfColor;
-                    icon1s[i].sprite = LDB.signals.IconSprite(markerPool[num].icon1ID); ;
-                    icon2s[i].sprite = LDB.signals.IconSprite(markerPool[num].icon2ID); ;
-                    decs[i].text = markerPool[num].desc;
-                }
+                List<int> list = new List<int>();
+                MarkerPool.markerIdInPlanet.Add(planetId, list);
             }
 
 
+            if (markerIdInPlanet[planetId].Count > 0 && markerCreated)
+            {
+                for (int i = 0; i < markerIdInPlanet[planetId].Count; i++)
+                {
+                    var num = markerIdInPlanet[planetId][i];
+                    if (markerPool.ContainsKey(num))
+                    {
+                        Base[i].color = markerPool[num].color;
+                        var halfColor = new Color(markerPool[num].color.r * 0.3f, markerPool[num].color.g * 0.3f, markerPool[num].color.b * 0.3f, 1f);
+                        BaseRound[i].color = halfColor;
+                        icon1s[i].sprite = LDB.signals.IconSprite(markerPool[num].icon1ID); ;
+                        icon2s[i].sprite = LDB.signals.IconSprite(markerPool[num].icon2ID); ;
+                        decs[i].text = markerPool[num].desc;
+                    }
+                }
+            }
+
         }
+
+        public static void Crear()
+        {
+            for (int i = 0; i < Main.maxMarker; i++)
+            {
+                markers[i].gameObject.SetActive(false);
+            }
+        }
+
         public static void Update()
         {
             if (!markerEnable)
             {
                 return;
             }
-            if (UIGame.viewMode != EViewMode.Normal && UIGame.viewMode != EViewMode.Globe && UIGame.viewMode != EViewMode.Build)
-            {
-                MarkerPrefab.markerGroup.SetActive(false);
-                return;
-            }
-            if (GameMain.data == null)
-            {
-                return;
-            }
-            PlanetData localPlanet = GameMain.data.localPlanet;
-            if (localPlanet == null)
-            {
-                return;
-            }
+            int planetId = GameMain.data.localPlanet.id;
             MarkerPrefab.markerGroup.SetActive(true);
 
             //Vector3 localPosition = GameCamera.main.transform.localPosition;
@@ -119,82 +142,10 @@ namespace DSPMarker
             for (int i = 0; i < Main.maxMarker; i++)
             {
                 //LogManager.Logger.LogInfo("------------------------------------------------------------------i : " + i);
-
-                var num2 = GameMain.localPlanet.id * 100 + i;
-                if (markerPool.ContainsKey(num2))
+                if (MarkerPool.markerIdInPlanet.ContainsKey(planetId) && i < markerIdInPlanet[planetId].Count)
                 {
-                    TransformPosAndDraw(i);
-                            //Vector3 vector = markerPool[num2].pos.normalized * (realRadius + 10f);
-                            //Vector3 vector2 = vector - localPosition;
-                            //float magnitude = vector2.magnitude;
-                            //float num = Vector3.Dot(forward, vector2);
-                            //if (magnitude < 1f || num < 1f)
-                            //{
-                            //    //markers[i].gameObject.SetActive(false);
-                            //}
-                            //else
-                            //{
-                            //Vector2 vector3;
-                            //bool flag = UIRoot.ScreenPointIntoRect(GameCamera.main.WorldToScreenPoint(vector), markers[i].GetComponent<RectTransform>(), out vector3);
-                            //if (Mathf.Abs(vector3.x) > 8000f)
-                            //{
-                            //    flag = false;
-                            //}
-                            //if (Mathf.Abs(vector3.y) > 8000f)
-                            //{
-                            //    flag = false;
-                            //}
-                            //RCHCPU rchcpu;
-                            //if (Phys.RayCastSphere(localPosition, vector2 / magnitude, magnitude, Vector3.zero, realRadius, out rchcpu))
-                            //{
-                            //    flag = false;
-                            //}
-                            //if (flag)
-                            //{
-                            //markers[i].gameObject.SetActive(true);
-                        //}
-                        //else
-                        //{
-                        //    markers[i].gameObject.SetActive(false);
-                        //}
-                        //vector3.x = Mathf.Round(vector3.x);
-                        //vector3.y = Mathf.Round(vector3.y);
-                        //markers[i].GetComponent<RectTransform>().anchoredPosition = vector3;
-
-                    //}
-                    ////LogManager.Logger.LogInfo("------------------------------------------------------------------num : " + num);
-                    //Vector3 vector = markerPool[num].pos;
-                    ////Vector3 vector2 = vector - cameraPosition;
-                    ////float magnitude = vector2.magnitude;
-                    ////if (magnitude > 1f)
-                    ////{
-                    //    Vector2 vector3;
-                    //    bool flag = UIRoot.ScreenPointIntoRect(GameCamera.main.WorldToScreenPoint(vector), markers[i].GetComponent<RectTransform>(), out vector3);
-                    //    //if (!markerPool[num].throughPlanet)
-                    //    //{
-                    //    //    if (Mathf.Abs(vector3.x) > 8000f)
-                    //    //    {
-                    //    //        flag = false;
-                    //    //    }
-                    //    //    if (Mathf.Abs(vector3.y) > 8000f)
-                    //    //    {
-                    //    //        flag = false;
-                    //    //    }
-                    //    //    RCHCPU rchcpu;
-                    //    //    if (Phys.RayCastSphere(cameraPosition, vector2 / magnitude, magnitude, Vector3.zero, realRadius, out rchcpu))
-                    //    //    {
-                    //    //        flag = false;
-                    //    //    }
-                    //    //}
-                    //    //if (flag) //見えたら？
-                    //    //{
-                    //    //Vector3 uiPos = RectTransformUtility.WorldToScreenPoint(GameCamera.main, vector);
-                    //    vector3.x = Mathf.Round(vector3.x);
-                    //    vector3.y = Mathf.Round(vector3.y);
-                    //    markers[i].GetComponent<RectTransform>().anchoredPosition = vector3;
-                    //        markers[i].gameObject.SetActive(true);
-                    //    //}
-                    ////}
+                    var num = markerIdInPlanet[planetId][i];
+                    TransformPosAndDraw(i,num);
                 }
                 else
                 {
@@ -203,9 +154,9 @@ namespace DSPMarker
             }
         }
 
-        public static void TransformPosAndDraw(int i)
+        public static void TransformPosAndDraw(int i, int num6)
         {
-            var num6 = GameMain.localPlanet.id * 100 + i;
+            //var num6 = GameMain.localPlanet.id * 100 + i;
 
             Vector3 localPosition = GameCamera.main.transform.localPosition;
             Vector3 forward = GameCamera.main.transform.forward;
@@ -265,23 +216,23 @@ namespace DSPMarker
                     int UIwidth = UIheight * Screen.width / Screen.height;
 
                     vector3.x = Mathf.Round(vector3.x);
-                    if (vector3.x < 40)
+                    if (vector3.x < 30)
                     {
-                        vector3.x = 40;
+                        vector3.x = 30;
                     }
-                    else if (vector3.x > UIwidth - 40)
+                    else if (vector3.x > UIwidth - 30)
                     {
-                        vector3.x = UIwidth - 40;
+                        vector3.x = UIwidth - 30;
                     }
 
                     vector3.y = Mathf.Round(vector3.y);
-                    if (vector3.y < 40)
+                    if (vector3.y < 30)
                     {
-                        vector3.y = 40;
+                        vector3.y = 30;
                     }
-                    else if (vector3.y > UIheight - 40)
+                    else if (vector3.y > UIheight - 30)
                     {
-                        vector3.y = UIheight - 40;
+                        vector3.y = UIheight - 30;
                     }
                     else if (Phys.RayCastSphere(localPosition, vector2 / magnitude, magnitude, Vector3.zero, realRadius, out rchcpu))
                     {

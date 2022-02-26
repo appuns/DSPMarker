@@ -45,7 +45,7 @@ namespace DSPMarker
 
             pinBasePrefab.transform.SetParent(markerGroup.transform);
             pinBasePrefab.name = "pinBasePrefab";
-            pinBasePrefab.AddComponent<Image>().sprite = Main.merkerStripe;
+            pinBasePrefab.AddComponent<Image>().sprite = Main.merkerSprite;
             pinBasePrefab.GetComponent<Image>().color = new Color(0, 1, 1, 1);
             pinBasePrefab.GetComponent<RectTransform>().anchorMax = new Vector2(0, 0);
             pinBasePrefab.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
@@ -57,7 +57,7 @@ namespace DSPMarker
 
             pinBaseRound.transform.SetParent(pinBasePrefab.transform);
             pinBaseRound.name = "round";
-            pinBaseRound.AddComponent<Image>().sprite = Main.roundStripe;
+            pinBaseRound.AddComponent<Image>().sprite = Main.roundSprite;
             pinBaseRound.GetComponent<Image>().color = new Color(0, 0.4f, 0.4f, 1);
             pinBaseRound.GetComponent<RectTransform>().sizeDelta = new Vector3(155, 155, 0);
             pinBaseRound.transform.localPosition = new Vector3(0, 18, 0);

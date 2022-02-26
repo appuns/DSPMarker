@@ -48,11 +48,13 @@ namespace DSPMarker
         public static GameObject checkBox3 = new GameObject();
         public static GameObject closeButton = new GameObject();
         public static GameObject applyButton = new GameObject();
+        public static GameObject deleteButton = new GameObject();
         public static GameObject previewText = new GameObject();
 
         public static Color[] color = new Color[7];
 
-        public static int id;
+        public static int ID;
+        public static int planetID;
         public static Vector3 pos;
         public static int iconID1;
         public static int iconID2;
@@ -62,22 +64,41 @@ namespace DSPMarker
         public static bool throughPlanet;
         public static bool ShowArrow;
 
+        public static int number;
+
+
         public static Sprite emptySprite;
 
 
         //フラグ
         public static void Open(int num)
         {
+            number = num;
             var pos1 = MarkerList.boxMarker[num].transform.localPosition;
-            window.transform.localPosition = new Vector3(pos1.x + 637, pos1.y + 530, 0);
-            int serchNum = GameMain.localPlanet.id * 100 + num;
+            float y = pos1.y + 530;
+            int UIheight = DSPGame.globalOption.uiLayoutHeight;
+
+            if (y < window.GetComponent<RectTransform>().sizeDelta.y - UIheight / 2)
+            {
+                y = window.GetComponent<RectTransform>().sizeDelta.y - UIheight / 2;
+
+            }
+            window.transform.localPosition = new Vector3(pos1.x + 637, y, 0);
+
+
+
+            int planetId = GameMain.localPlanet.id;
             Sprite sprite1;
             Sprite sprite2;
-            id = num;
+            //id = num;
 
-            if (MarkerPool.markerPool.ContainsKey(serchNum))
+            if (num < MarkerPool.markerIdInPlanet[planetId].Count)
             {
-                MarkerPool.Marker marker = MarkerPool.markerPool[serchNum];
+                int searchNum = MarkerPool.markerIdInPlanet[planetId][num];
+
+                MarkerPool.Marker marker = MarkerPool.markerPool[searchNum];
+                ID = searchNum;
+                planetID = marker.planetID;
                 pos = marker.pos;
                 iconID1 = marker.icon1ID;
                 iconID2 = marker.icon2ID;
@@ -88,9 +109,13 @@ namespace DSPMarker
                 alwaysDisplay = marker.alwaysDisplay;
                 throughPlanet = marker.throughPlanet;
                 ShowArrow = marker.ShowArrow;
+
+                deleteButton.SetActive(true);
+
             }
             else
             {
+                planetID = planetId;
                 iconID1 = 0;
                 iconID2 = 0;
                 sprite1 = emptySprite;
@@ -100,6 +125,9 @@ namespace DSPMarker
                 alwaysDisplay = true;
                 throughPlanet = true;
                 ShowArrow = true;
+
+                deleteButton.SetActive(false);
+
             }
             MarkerEditor.iconBox1.GetComponent<Image>().sprite = sprite1;
             MarkerEditor.markerPrefab.transform.Find("round/pinBaseIcon1").gameObject.GetComponent<Image>().sprite = sprite1;
@@ -344,7 +372,7 @@ namespace DSPMarker
             //LogManager.Logger.LogInfo("---------------------------------------------------------make EditorWindow 10");
 
             //「適応」ボタン
-            applyButton = Instantiate(UIRoot.instance.uiGame.stationWindow.storageUIPrefab.localSdButton.gameObject, window.transform) as GameObject;
+            applyButton = Instantiate(UIRoot.instance.uiGame.stationWindow.storageUIPrefab.localSdButton.gameObject, window.transform);
             applyButton.transform.localPosition = new Vector3(200, -400, 0);
             applyButton.name = "applyButton";
             applyButton.GetComponentInChildren<Text>().text = "Apply".Translate();
@@ -352,6 +380,13 @@ namespace DSPMarker
             applyButton.GetComponent<Image>().color = new Color(0.240f, 0.55f, 0.65f, 0.7f);
             applyButton.SetActive(true);
 
+            //「削除」ボタン
+            deleteButton = Instantiate(applyButton.gameObject, window.transform);
+            deleteButton.transform.localPosition = new Vector3(0, -400, 0);
+            deleteButton.name = "deleteButton";
+            deleteButton.GetComponentInChildren<Text>().text = "delete".Translate();
+            deleteButton.GetComponent<Image>().color = new Color(0.7f, 0.5f, 0, 1);
+            deleteButton.SetActive(true);
 
 
             //閉じるボタン
@@ -370,6 +405,7 @@ namespace DSPMarker
             closeButton.GetComponent<Button>().onClick.AddListener(onClickCloseButton);
 
             applyButton.GetComponent<Button>().onClick.AddListener(onClickApplyButton);
+            deleteButton.GetComponent<Button>().onClick.AddListener(onClickDeleteButton);
 
 
 
@@ -384,7 +420,7 @@ namespace DSPMarker
             var realRadius = GameMain.localPlanet.realRadius;
  
             MarkerPool.Marker marker = new MarkerPool.Marker();
-            //marker.planetID = GameMain.localPlanet.id;
+            marker.planetID = GameMain.localPlanet.id;
             marker.icon1ID = iconID1;
             marker.icon2ID = iconID2;
             marker.color = baseColor;
@@ -392,27 +428,37 @@ namespace DSPMarker
             marker.alwaysDisplay = alwaysDisplay;
             marker.throughPlanet = throughPlanet;
             marker.ShowArrow = ShowArrow;
-            var num = GameMain.localPlanet.id * 100 + id;
+            //var num = GameMain.localPlanet.id * 100 + ID;
             
-            if(MarkerPool.markerPool.ContainsKey(num))
+            if(MarkerPool.markerPool.ContainsKey(ID))
             {
                 marker.pos = pos;
-                MarkerPool.markerPool[num] = marker;
+                MarkerPool.markerPool[ID] = marker;
             }
             else
             {
+                var num = GameMain.localPlanet.id * 100 + number;
                 marker.pos = GameMain.mainPlayer.position;
                 MarkerPool.markerPool.Add(num, marker);
+                MarkerPool.markerIdInPlanet[marker.planetID].Add(num);
             }
-            LogManager.Logger.LogInfo("------------------------------------------------------------------num : " + num);
+            //LogManager.Logger.LogInfo("------------------------------------------------------------------num : " + num);
 
             MarkerList.Refresh();
             MarkerPool.Refresh();
-
-
-
             Close();
         }
+
+        public static void onClickDeleteButton()
+        {
+            MarkerPool.markerPool.Remove(ID);
+            MarkerPool.markerIdInPlanet[GameMain.localPlanet.id].Remove(ID);
+            MarkerList.Refresh();
+            MarkerPool.Refresh();
+            Close();
+
+        }
+
 
         public static void onClickCloseButton()
         {

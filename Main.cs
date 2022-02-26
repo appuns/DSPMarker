@@ -37,23 +37,26 @@ namespace DSPMarker
 
     public class Main : BaseUnityPlugin, IModCanSave
     {
+
+
+
         //public static ConfigEntry<bool> ShowStationInfo;
-        //public static ConfigEntry<int> maxCount;
+        public static ConfigEntry<bool> DisableKeyTips;
+        public static ConfigEntry<bool> alwaysDisplay;
+        public static ConfigEntry<bool> throughPlanet;
+        public static ConfigEntry<bool> ShowArrow;
         public static bool showList = true;
 
-
-        //public static bool alwaysDisplay = true;
-        //public static bool throughPlanet = true;
-        //public static bool ShowArrow = true;
 
         //public static float signHeight = 3f;
         //public static float signSize = 0f;
         //public static bool signChanged = false;
         //public static bool addSign = false;
 
-        public static Sprite merkerStripe;
-        public static Sprite roundStripe;
-        public static Sprite ButtonStripe;
+        public static Sprite arrowSprite;
+        public static Sprite merkerSprite;
+        public static Sprite roundSprite;
+        public static Sprite ButtonSprite;
 
         public static int maxMarker = 20;
         public static int markerCount = 0;
@@ -69,7 +72,10 @@ namespace DSPMarker
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
 
             ////configの設定
-            //ShowStationInfo = Config.Bind("General", "ShowStationInfo", false, "Show Station Information");
+            DisableKeyTips = Config.Bind("General", "DisableKeyTips", false, "Disable Key Tips on right side");
+            alwaysDisplay = Config.Bind("General", "DisableKeyTips", true, "Disable Key Tips on right side");
+            throughPlanet = Config.Bind("General", "DisableKeyTips", true, "Disable Key Tips on right side");
+            ShowArrow = Config.Bind("General", "DisableKeyTips", true, "Disable Key Tips on right side");
             ////maxCount = Config.Bind("General", "maxCount", 200, "Inventory Column Count");
 
             //jsonFilePath = Path.Combine(Paths.ConfigPath, "markers.json");
@@ -84,6 +90,7 @@ namespace DSPMarker
             MarkerEditor.Create();
             MarkerList.Create();
             MarkerPool.Create();
+            //ArrowPool.Create();
 
         }
 
@@ -108,8 +115,26 @@ namespace DSPMarker
 
         public void Update()
         {
+            if (GameMain.data == null)
+            {
+                return;
+            }
+            if (GameMain.localPlanet == null)
+            {
+                MarkerPool.Crear();
+                MarkerList.Crear();
+                return;
+            }
+            if (UIGame.viewMode != EViewMode.Normal && UIGame.viewMode != EViewMode.Globe && UIGame.viewMode != EViewMode.Build)
+            {
+                return;
+            }
+            if (DSPGame.Game.isMenuDemo || !GameMain.isRunning)
+            {
+                return;
+            }
             MarkerPool.Update();
-            //test.Update();
+            ArrowPool.Update();
         }
 
 
@@ -125,9 +150,10 @@ namespace DSPMarker
                 }
                 else
                 {
-                    merkerStripe = assetBundle.LoadAsset<Sprite>("marker");
-                    roundStripe = assetBundle.LoadAsset<Sprite>("round");
-                    ButtonStripe = assetBundle.LoadAsset<Sprite>("mapmarker");
+                    arrowSprite = assetBundle.LoadAsset<Sprite>("arrow");
+                    merkerSprite = assetBundle.LoadAsset<Sprite>("marker");
+                    roundSprite = assetBundle.LoadAsset<Sprite>("round");
+                    ButtonSprite = assetBundle.LoadAsset<Sprite>("mapmarker");
                     assetBundle.Unload(false);
                 }
             }
@@ -143,42 +169,81 @@ namespace DSPMarker
 
         public void Import(BinaryReader r)
         {
-            LogManager.Logger.LogInfo("---------------------------------------------------------Import");
-
+            //MarkerPool.countInPlanet.Clear();
             MarkerPool.markerPool.Clear();
-            int num = r.ReadInt32();
-            for (int i = 0; i < num; i++)
-            {
-                var Key = r.ReadInt32();
-                MarkerPool.Marker marker = new MarkerPool.Marker();
-                marker.pos.x = r.ReadSingle();
-                marker.pos.y = r.ReadSingle();
-                marker.pos.z = r.ReadSingle();
-                marker.icon1ID = r.ReadInt32();
-                marker.icon2ID = r.ReadInt32();
-                marker.color.r = r.ReadSingle();
-                marker.color.g = r.ReadSingle();
-                marker.color.b = r.ReadSingle();
-                marker.color.a = r.ReadSingle();
-                marker.desc = r.ReadString();
-                marker.alwaysDisplay = r.ReadBoolean();
-                marker.throughPlanet = r.ReadBoolean();
-                marker.ShowArrow = r.ReadBoolean();
-                MarkerPool.markerPool.Add(Key, marker);
-                MarkerList.Refresh();
-                MarkerPool.Refresh();
+            MarkerPool.markerIdInPlanet.Clear();
 
+            if ( r.ReadInt32() == 1)
+            {
+                //markerIdInPlanetの読み込み
+                int num = r.ReadInt32();
+                for (int i = 0; i < num; i++)
+                {
+                    var Key = r.ReadInt32();
+                    var num2 = r.ReadInt32();
+                    List<int> list = new List<int>();
+                    for (int j = 0; j < num2; j++)
+                    {
+                        list.Add(r.ReadInt32());
+                    }
+                    MarkerPool.markerIdInPlanet.Add(Key, list);
+                }
+                //markerIdInPlanetの読み込み
+                int num3 = r.ReadInt32();
+                for (int i = 0; i < num3; i++)
+                {
+                    var Key = r.ReadInt32();
+                    MarkerPool.Marker marker = new MarkerPool.Marker();
+                    marker.planetID = r.ReadInt32();
+                    marker.pos.x = r.ReadSingle();
+                    marker.pos.y = r.ReadSingle();
+                    marker.pos.z = r.ReadSingle();
+                    marker.icon1ID = r.ReadInt32();
+                    marker.icon2ID = r.ReadInt32();
+                    marker.color.r = r.ReadSingle();
+                    marker.color.g = r.ReadSingle();
+                    marker.color.b = r.ReadSingle();
+                    marker.color.a = r.ReadSingle();
+                    marker.desc = r.ReadString();
+                    marker.alwaysDisplay = r.ReadBoolean();
+                    marker.throughPlanet = r.ReadBoolean();
+                    marker.ShowArrow = r.ReadBoolean();
+                    MarkerPool.markerPool.Add(Key, marker);
+                }
+                MarkerPool.Refresh();
+                MarkerList.Refresh();
             }
+            else
+            {
+                LogManager.Logger.LogInfo("Save data version error");
+            }
+
+            //MarkerList.Reset();
+
         }
 
         public void Export(BinaryWriter w)
         {
             LogManager.Logger.LogInfo("---------------------------------------------------------Export");
+            w.Write(1); //セーブデータバージョン
+            //markerIdInPlanetの書き込み
+            w.Write(MarkerPool.markerIdInPlanet.Count);
+            foreach (KeyValuePair<int, List<int>> keyValuePair in MarkerPool.markerIdInPlanet)
+            {
+                w.Write(keyValuePair.Key);
+                w.Write(keyValuePair.Value.Count);
+                foreach (int markerId in keyValuePair.Value)
+                {
+                    w.Write(markerId);
+                }
 
+            }
+            //markerPoolの書き込み
             w.Write(MarkerPool.markerPool.Count);
             foreach (KeyValuePair<int, MarkerPool.Marker> keyValuePair in MarkerPool.markerPool)
             {
                 w.Write(keyValuePair.Key);
+                w.Write(keyValuePair.Value.planetID);
                 w.Write(keyValuePair.Value.pos.x);
                 w.Write(keyValuePair.Value.pos.y);
                 w.Write(keyValuePair.Value.pos.z);
@@ -198,7 +263,10 @@ namespace DSPMarker
 
         public void IntoOtherSave()
         {
-            MarkerPool.markerPool.Clear();
+            //MarkerPool.markerIdInPlanet.Clear();
+            //MarkerPool.markerPool.Clear();
+            //MarkerPool.Refresh();
+            //MarkerList.Refresh();
         }
 
     }

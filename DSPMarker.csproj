@@ -338,6 +338,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClickHandler.cs" />
+    <Compile Include="ArrowPool.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="MarkerList.cs" />

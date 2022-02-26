@@ -68,7 +68,7 @@ namespace DSPMarker
             markerButton.GetComponent<UIButton>().tips.corner = 4;
             markerButton.GetComponent<UIButton>().tips.offset = new Vector2(-50, 20);
             markerButton.GetComponent<UIButton>().tips.width = 215;
-            markerButton.transform.Find("icon").GetComponent<Image>().sprite = Main.ButtonStripe;
+            markerButton.transform.Find("icon").GetComponent<Image>().sprite = Main.ButtonSprite;
             markerButton.GetComponent<UIButton>().highlighted = true;
             markerButton.AddComponent<UIClickHandler>();
             //ボタンイベントの作成
@@ -203,6 +203,30 @@ namespace DSPMarker
             markerButton.GetComponent<UIButton>().highlighted = showList;
 
         }
+
+
+        public static void Reset()
+        {
+            for (int i = 0; i < Main.maxMarker; i++)
+            {
+                boxMarker[i].AddComponent<Image>().color = new Color(0.7f, 0.5f, 0, 1);
+                boxSquare[i].SetActive(false);
+                boxIcon1[i].SetActive(false);
+                boxIcon2[i].SetActive(false);
+                boxText[i].transform.localPosition = new Vector3(0, 0, 0);
+                boxText[i].AddComponent<Text>().text = "New\nMarker".Translate();
+            }
+        }
+
+        public static void Crear()
+        {
+            for (int i = 0; i < Main.maxMarker; i++)
+            {
+                boxMarker[i].gameObject.SetActive(false);
+            }
+        }
+
+
         //右クリックで新規
 
         //リストをクリックしたら
@@ -273,6 +297,7 @@ namespace DSPMarker
                 if (editMode)
                 {
                     modeText.GetComponent<Text>().text = "Guide\nMode".Translate();
+                    MarkerEditor.Close();
                     editMode = false;
                 }
                 else
@@ -305,14 +330,22 @@ namespace DSPMarker
         }
         public static void Refresh()
         {
-            LogManager.Logger.LogInfo("---------------------------------------------------------refresh");
-            LogManager.Logger.LogInfo("---------------------------------------------------------MarkerPool.markerPool.Count : " + MarkerPool.markerPool.Count);
+            //LogManager.Logger.LogInfo("---------------------------------------------------------refresh");
+            //LogManager.Logger.LogInfo("---------------------------------------------------------MarkerPool.markerPool.Count : " + MarkerPool.markerPool.Count);
+
+            int planetId = GameMain.localPlanet.id;
+
+            if (!MarkerPool.markerIdInPlanet.ContainsKey(planetId))
+            {
+                List<int> list = new List<int>();
+                MarkerPool.markerIdInPlanet.Add(planetId, list);
+            }
+
             for (int i = 0; i < Main.maxMarker; i++)
             {
-                if (i < MarkerPool.markerPool.Count)
+                if (i < MarkerPool.markerIdInPlanet[planetId].Count)
                 {
-                    var planetID = GameMain.localPlanet.id;
-                    var num = planetID * 100 + i;
+                    var num = MarkerPool.markerIdInPlanet[planetId][i];
                     var marker = MarkerPool.markerPool[num];
 
                     boxMarker[i].GetComponent<Image>().color = marker.color;
@@ -333,11 +366,21 @@ namespace DSPMarker
                     boxMarker[i].SetActive(false);
                 }
             }
-            if (editMode && MarkerPool.markerPool.Count < Main.maxMarker)
+            if (editMode)
             {
-                boxMarker[MarkerPool.markerPool.Count].SetActive(true);
-            }
+                if(MarkerPool.markerIdInPlanet[planetId].Count < Main.maxMarker)
+                {
+                    int count = MarkerPool.markerIdInPlanet[planetId].Count;
+                    boxMarker[count].GetComponent<Image>().color = new Color(0.7f, 0.5f, 0, 1);
+                    boxSquare[count].SetActive(false);
+                    boxIcon1[count].SetActive(false);
+                    boxIcon2[count].SetActive(false);
+                    boxText[count].transform.localPosition = new Vector3(0, 0, 0);
+                    boxText[count].GetComponent<Text>().text = "New\nMarker".Translate();
 
+                    boxMarker[count].SetActive(true);
+                }
+            }
         }
 
     }

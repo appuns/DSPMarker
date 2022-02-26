@@ -29,13 +29,13 @@ namespace DSPMarker
     internal class Patch
     {
         //オプション変更後の情報ウインドウ位置修正
-        [HarmonyPostfix,HarmonyPatch(typeof(UIOptionWindow), "ApplyOptions")]
+        [HarmonyPostfix, HarmonyPatch(typeof(UIOptionWindow), "ApplyOptions")]
         public static void UIOptionWindowa_ApplyOptions_Postfix(UIOptionWindow __instance)
         {
             //UI解像度計算
             int UIheight = DSPGame.globalOption.uiLayoutHeight;
             int UIwidth = UIheight * Screen.width / Screen.height;
-                
+
             //位置の調整
             MarkerList.listBase.transform.localPosition = new Vector3(UIwidth / 2 - 60, UIheight / 2 - 70, 0);
             int maxRow = (UIheight - 270 - 115) / MarkerList.boxSize;
@@ -50,5 +50,23 @@ namespace DSPMarker
             }
         }
 
+        //キーチップの非表示
+        [HarmonyPrefix, HarmonyPatch(typeof(UIKeyTips), "_OnOpen")]
+        public static bool UIKeyTips_OnOpen_Prefix(UIOptionWindow __instance)
+        {
+            if (Main.DisableKeyTips.Value)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        //他の惑星に到着したら再表示
+        [HarmonyPostfix, HarmonyPatch(typeof(GameData), "ArrivePlanet")]
+        public static void UIStarDetail_ArrivePlanet_Postfix()
+        {
+            MarkerPool.Update();
+            ArrowPool.Update();
+        }
     }
 }
