@@ -28,6 +28,8 @@ namespace DSPMarker
     {
         public static Dictionary<int, List<int>> markerIdInPlanet = new Dictionary<int, List<int>>();
         public static Dictionary<int, Marker> markerPool = new Dictionary<int, Marker>();
+
+        public static int markerCursor = 0;
         //public static Dictionary<int, Marker> markerPoolLocal = new Dictionary<int, Marker>();
 
         //public static int Main.maxMarker = 20;
@@ -109,8 +111,24 @@ namespace DSPMarker
                         Base[i].color = markerPool[num].color;
                         var halfColor = new Color(markerPool[num].color.r * 0.3f, markerPool[num].color.g * 0.3f, markerPool[num].color.b * 0.3f, 1f);
                         BaseRound[i].color = halfColor;
-                        icon1s[i].sprite = LDB.signals.IconSprite(markerPool[num].icon1ID); ;
-                        icon2s[i].sprite = LDB.signals.IconSprite(markerPool[num].icon2ID); ;
+                        if (markerPool[num].icon1ID == 0)
+                        {
+                            icon1s[i].gameObject.SetActive(false);
+                        }
+                        else
+                        {
+                            icon1s[i].gameObject.SetActive(true);
+                            icon1s[i].sprite = LDB.signals.IconSprite(markerPool[num].icon1ID);
+                        }
+                        if (markerPool[num].icon2ID == 0)
+                        {
+                            icon2s[i].gameObject.SetActive(false);
+                        }
+                        else
+                        {
+                            icon2s[i].gameObject.SetActive(true);
+                            icon2s[i].sprite = LDB.signals.IconSprite(markerPool[num].icon2ID);
+                        }
                         decs[i].text = markerPool[num].desc;
                     }
                 }
@@ -128,6 +146,8 @@ namespace DSPMarker
 
         public static void Update()
         {
+            //LogManager.Logger.LogInfo("------------------------------------------------------------------markerPool Update ");
+
             if (!markerEnable)
             {
                 return;

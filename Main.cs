@@ -64,7 +64,7 @@ namespace DSPMarker
         //public static string jsonFilePath;
 
         //public static bool showSignButton = true;
-       
+
 
         public void Start()
         {
@@ -83,7 +83,7 @@ namespace DSPMarker
             ////テスト
             ////GameMain.data.mainPlayer.gameObject.AddComponent<DynamicCreateMesh>();
             ///
-            LogManager.Logger.LogInfo("---------------------------------------------------------load icon");
+            //LogManager.Logger.LogInfo("---------------------------------------------------------load icon");
 
             LoadIcon();
             MarkerPrefab.Create();
@@ -91,6 +91,8 @@ namespace DSPMarker
             MarkerList.Create();
             MarkerPool.Create();
             //ArrowPool.Create();
+            MarkerPrefab.markerGroup.SetActive(false);
+            MarkerList.listBase.SetActive(false);
 
         }
 
@@ -119,20 +121,41 @@ namespace DSPMarker
             {
                 return;
             }
+            LogManager.Logger.LogInfo("---------------------------------------------------------GameMain.data != null ");
+
             if (GameMain.localPlanet == null)
             {
-                MarkerPool.Crear();
-                MarkerList.Crear();
+                //LogManager.Logger.LogInfo("---------------------------------------------------------GameMain.localPlanet : non");
                 return;
             }
-            if (UIGame.viewMode != EViewMode.Normal && UIGame.viewMode != EViewMode.Globe && UIGame.viewMode != EViewMode.Build)
+            LogManager.Logger.LogInfo("---------------------------------------------------------GameMain.localPlanet != null ");
+
+            //LogManager.Logger.LogInfo("---------------------------------------------------------GameMain.localPlanet : " + GameMain.localPlanet.id);
+
+            if (UIGame.viewMode != EViewMode.Sail && UIGame.viewMode != EViewMode.Normal && UIGame.viewMode != EViewMode.Globe && UIGame.viewMode != EViewMode.Build)
             {
                 return;
             }
-            if (DSPGame.Game.isMenuDemo || !GameMain.isRunning)
+            LogManager.Logger.LogInfo("---------------------------------------------------------UIGame.viewMode ");
+            if (DSPGame.Game != null && DSPGame.Game.isMenuDemo || !GameMain.isRunning)
             {
                 return;
             }
+            LogManager.Logger.LogInfo("---------------------------------------------------------DSPGame.Game != null ");
+            //if (GameMain.data.mainPlayer.sailing)
+            //{
+            //    MarkerPrefab.markerGroup.SetActive(false);
+            //    MarkerList.listBase.SetActive(false);
+
+            //    //LogManager.Logger.LogInfo("---------------------------------------------------------sailing ");
+            //    return;
+            //}
+            //LogManager.Logger.LogInfo("---------------------------------------------------------no sailing ");
+            MarkerPrefab.markerGroup.SetActive(true);
+            MarkerList.listBase.SetActive(true);
+
+            LogManager.Logger.LogInfo("---------------------------------------------------------update ");
+
             MarkerPool.Update();
             ArrowPool.Update();
         }
@@ -173,8 +196,11 @@ namespace DSPMarker
             MarkerPool.markerPool.Clear();
             MarkerPool.markerIdInPlanet.Clear();
 
-            if ( r.ReadInt32() == 1)
+            if (r.ReadInt32() == 1)
             {
+                //markerCursorの読み込み
+                MarkerPool.markerCursor = r.ReadInt32();
+
                 //markerIdInPlanetの読み込み
                 int num = r.ReadInt32();
                 for (int i = 0; i < num; i++)
@@ -226,6 +252,8 @@ namespace DSPMarker
         {
             LogManager.Logger.LogInfo("---------------------------------------------------------Export");
             w.Write(1); //セーブデータバージョン
+            //markerCursorの書き込み
+            w.Write(MarkerPool.markerCursor);
             //markerIdInPlanetの書き込み
             w.Write(MarkerPool.markerIdInPlanet.Count);
             foreach (KeyValuePair<int, List<int>> keyValuePair in MarkerPool.markerIdInPlanet)
@@ -263,12 +291,14 @@ namespace DSPMarker
 
         public void IntoOtherSave()
         {
-            //MarkerPool.markerIdInPlanet.Clear();
-            //MarkerPool.markerPool.Clear();
-            //MarkerPool.Refresh();
-            //MarkerList.Refresh();
+            if (MarkerPool.markerPool.Count > 0)
+            {
+                MarkerPool.markerIdInPlanet.Clear();
+                MarkerPool.markerPool.Clear();
+                MarkerPool.Refresh();
+                MarkerList.Refresh();
+            }
         }
-
     }
 
 

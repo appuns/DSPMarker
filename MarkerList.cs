@@ -88,7 +88,6 @@ namespace DSPMarker
 
 
             //リストprefabの作成
-            LogManager.Logger.LogInfo("---------------------------------------------------------make marker 1");
 
             boxBasePrefab.transform.SetParent(listBase.transform);
             boxBasePrefab.name = "boxBasePrefab";
@@ -100,7 +99,6 @@ namespace DSPMarker
             boxBasePrefab.transform.localPosition = new Vector3(5, -80, 0);
             boxBasePrefab.transform.localScale = new Vector3(1, 1, 1);
             boxBasePrefab.SetActive(false);
-            LogManager.Logger.LogInfo("---------------------------------------------------------make marker 2");
 
             boxBaseSquare.transform.SetParent(boxBasePrefab.transform);
             boxBaseSquare.name = "boxBaseSquare";
@@ -111,7 +109,6 @@ namespace DSPMarker
             boxBaseSquare.transform.localPosition = new Vector3(0, 0, 0);
             boxBaseSquare.transform.localScale = new Vector3(1, 1, 1);
             boxBaseSquare.SetActive(false);
-            LogManager.Logger.LogInfo("---------------------------------------------------------make marker 3");
 
             boxBaseText.transform.SetParent(boxBasePrefab.transform);
             boxBaseText.name = "boxBaseText";
@@ -142,7 +139,6 @@ namespace DSPMarker
             modeText.GetComponent<RectTransform>().sizeDelta = new Vector3(50, 40, 0);
             modeText.SetActive(true);
 
-            LogManager.Logger.LogInfo("---------------------------------------------------------make marker 4");
             boxBaseIcon1.AddComponent<Image>().sprite = LDB.techs.Select(1001).iconSprite;
             boxBaseIcon1.name = "boxBaseIcon1";
             boxBaseIcon1.transform.SetParent(boxBasePrefab.transform);
@@ -153,7 +149,6 @@ namespace DSPMarker
             boxBaseIcon1.transform.localPosition = new Vector3(-15, 15, 0);
             boxBaseIcon1.transform.localScale = new Vector3(1, 1, 1);
             boxBaseIcon1.SetActive(false);
-            LogManager.Logger.LogInfo("---------------------------------------------------------make marker 5");
 
             boxBaseIcon2 = Instantiate(boxBaseIcon1.gameObject);
             boxBaseIcon2.name = "boxBaseIcon2";
@@ -205,18 +200,6 @@ namespace DSPMarker
         }
 
 
-        public static void Reset()
-        {
-            for (int i = 0; i < Main.maxMarker; i++)
-            {
-                boxMarker[i].AddComponent<Image>().color = new Color(0.7f, 0.5f, 0, 1);
-                boxSquare[i].SetActive(false);
-                boxIcon1[i].SetActive(false);
-                boxIcon2[i].SetActive(false);
-                boxText[i].transform.localPosition = new Vector3(0, 0, 0);
-                boxText[i].AddComponent<Text>().text = "New\nMarker".Translate();
-            }
-        }
 
         public static void Crear()
         {
@@ -235,7 +218,7 @@ namespace DSPMarker
             //boxText[i].GetComponent<Text>().text = "TESTGO"+i;
             //boxIcon1[i].GetComponent<Image>().sprite = LDB.techs.Select(1001).iconSprite;
             //boxIcon2[i].GetComponent<Image>().sprite = LDB.techs.Select(1002).iconSprite;
-            LogManager.Logger.LogInfo("---------------------------------------------------------i : " + i);
+            //LogManager.Logger.LogInfo("---------------------------------------------------------i : " + i);
             if (editMode)
             {
                 //int i = Int32.Parse(obj.name.Replace("boxMarker", ""));
@@ -356,10 +339,25 @@ namespace DSPMarker
                     boxText[i].transform.localPosition = new Vector3(0, -15, 0);
                     boxText[i].GetComponent<RectTransform>().sizeDelta = new Vector3(60, 35, 0);
                     boxText[i].SetActive(true);
-                    boxIcon1[i].GetComponent<Image>().sprite = LDB.signals.IconSprite(marker.icon1ID);
-                    boxIcon1[i].SetActive(true);
-                    boxIcon2[i].GetComponent<Image>().sprite = LDB.signals.IconSprite(marker.icon2ID);
-                    boxIcon2[i].SetActive(true);
+
+                    if (marker.icon1ID == 0)
+                    {
+                        boxIcon1[i].SetActive(false);
+                    }
+                    else
+                    {
+                        boxIcon1[i].GetComponent<Image>().sprite = LDB.signals.IconSprite(marker.icon1ID);
+                        boxIcon1[i].SetActive(true);
+                    }
+                    if (marker.icon2ID == 0)
+                    {
+                        boxIcon2[i].SetActive(false);
+                    }
+                    else
+                    {
+                        boxIcon2[i].GetComponent<Image>().sprite = LDB.signals.IconSprite(marker.icon2ID);
+                        boxIcon2[i].SetActive(true);
+                    }
                 }
                 else
                 {
@@ -377,6 +375,7 @@ namespace DSPMarker
                     boxIcon2[count].SetActive(false);
                     boxText[count].transform.localPosition = new Vector3(0, 0, 0);
                     boxText[count].GetComponent<Text>().text = "New\nMarker".Translate();
+                    boxText[count].GetComponent<RectTransform>().sizeDelta = new Vector3(60, 60, 0);
 
                     boxMarker[count].SetActive(true);
                 }

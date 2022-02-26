@@ -27,7 +27,6 @@ namespace DSPMarker
     internal class ArrowPool : MonoBehaviour
     {
         public static GameObject guideArrowBase;
-        public static GameObject ArrowRed;
         public static GameObject[] guideArrow = new GameObject[Main.maxMarker];
 
 
@@ -38,6 +37,13 @@ namespace DSPMarker
 
         public static void Update()
         {
+            int planetId = GameMain.localPlanet.id;
+            if (!MarkerPool.markerIdInPlanet.ContainsKey(planetId))
+            {
+                List<int> list = new List<int>();
+                MarkerPool.markerIdInPlanet.Add(planetId, list);
+            }
+
             if (guideArrowBase)
             {
                 if (GameMain.localPlanet != null && !GameMain.data.mainPlayer.sailing)
@@ -45,36 +51,33 @@ namespace DSPMarker
                     GameObject Player = GameMain.data.mainPlayer.gameObject;
                     if (Player.activeSelf)
                     {
+
                         Plane plane = new Plane(Player.transform.up, Player.transform.position);
-                        //var num = GameMain.localPlanet.id * 100 + 0;
-                        //var point = MarkerPool.markerPool[num].pos;
-
-                        //var planePoint = plane.ClosestPointOnPlane(point);
-
-                        //guideArrowBase.transform.localPosition = new Vector3(0, 0.8f, 0);
-                        ////var direction = planePoint - Player.transform.position;
-                        ////direction.x = 0;
-                        ////guideArrowBase.transform.forward = direction;
-                        //guideArrowBase.transform.LookAt(planePoint, Player.transform.up);
-
-                        //LogManager.Logger.LogInfo("-----------------------------------------------marker----------direction : " + direction.x + "," + direction.y + "," + direction.z);
                         guideArrowBase.gameObject.SetActive(true);
+                        
 
                         for (int i = 0; i < Main.maxMarker; i++)
                         {
-                            var num = GameMain.localPlanet.id * 100 + i;
+                            //var num = GameMain.localPlanet.id * 100 + i;
 
-                            if (MarkerPool.markerPool.ContainsKey(num))
+                            if (i < MarkerPool.markerIdInPlanet[planetId].Count)
                             {
-                                var point = MarkerPool.markerPool[num].pos;
-                                var planePoint = plane.ClosestPointOnPlane(point);
+                                var num = MarkerPool.markerIdInPlanet[planetId][i];
+                                if (MarkerPool.markerPool[num].ShowArrow)
+                                {
+                                    var point = MarkerPool.markerPool[num].pos;
+                                    var planePoint = plane.ClosestPointOnPlane(point);
 
-                                //guideArrow[i].transform.localPosition = new Vector3(0, 0.8f, 0);
-                                //var direction = planePoint - Player.transform.position;
-                                guideArrow[i].transform.LookAt(planePoint, Player.transform.up);
-                                guideArrow[i].GetComponent<MeshRenderer>().material.color = MarkerPool.markerPool[num].color;
-                                guideArrow[i].GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", MarkerPool.markerPool[num].color);
-                                guideArrow[i].gameObject.SetActive(true);
+                                    //guideArrow[i].transform.localPosition = new Vector3(0, 0.8f, 0);
+                                    //var direction = planePoint - Player.transform.position;
+                                    guideArrow[i].transform.LookAt(planePoint, Player.transform.up);
+                                    guideArrow[i].GetComponent<MeshRenderer>().material.color = MarkerPool.markerPool[num].color;
+                                    guideArrow[i].GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", MarkerPool.markerPool[num].color);
+                                    guideArrow[i].gameObject.SetActive(true);
+                                }else
+                                {
+                                    guideArrow[i].gameObject.SetActive(false);
+                                }
                             }
                             else
                             {

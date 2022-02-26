@@ -51,8 +51,8 @@ namespace DSPMarker
         }
 
         //キーチップの非表示
-        [HarmonyPrefix, HarmonyPatch(typeof(UIKeyTips), "_OnOpen")]
-        public static bool UIKeyTips_OnOpen_Prefix(UIOptionWindow __instance)
+        [HarmonyPrefix, HarmonyPatch(typeof(UIKeyTips), "_OnUpdate")]
+        public static bool UIKeyTips_OnUpdate_Prefix(UIOptionWindow __instance)
         {
             if (Main.DisableKeyTips.Value)
             {
@@ -65,8 +65,19 @@ namespace DSPMarker
         [HarmonyPostfix, HarmonyPatch(typeof(GameData), "ArrivePlanet")]
         public static void UIStarDetail_ArrivePlanet_Postfix()
         {
+            MarkerPrefab.markerGroup.SetActive(true);
+            MarkerList.listBase.SetActive(true);
+
             MarkerPool.Update();
             ArrowPool.Update();
+        }
+
+        //惑星を去ったら
+        [HarmonyPostfix, HarmonyPatch(typeof(GameData), "LeavePlanet")]
+        public static void UIStarDetail_LeavePlanet_Postfix()
+        {
+            MarkerPrefab.markerGroup.SetActive(false);
+            MarkerList.listBase.SetActive(false);
         }
     }
 }

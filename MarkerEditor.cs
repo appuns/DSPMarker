@@ -64,16 +64,16 @@ namespace DSPMarker
         public static bool throughPlanet;
         public static bool ShowArrow;
 
-        public static int number;
-
-
+        //public static int number;
         public static Sprite emptySprite;
+        
+        public static bool newOne;
 
 
         //フラグ
         public static void Open(int num)
         {
-            number = num;
+            //number = num;
             var pos1 = MarkerList.boxMarker[num].transform.localPosition;
             float y = pos1.y + 530;
             int UIheight = DSPGame.globalOption.uiLayoutHeight;
@@ -102,14 +102,30 @@ namespace DSPMarker
                 pos = marker.pos;
                 iconID1 = marker.icon1ID;
                 iconID2 = marker.icon2ID;
-                sprite1 = LDB.signals.IconSprite(marker.icon1ID);
-                sprite2 = LDB.signals.IconSprite(marker.icon2ID);
+                
+                if (marker.icon1ID == 0)
+                {
+                    sprite1 = emptySprite;
+                }
+                else
+                {
+                    sprite1 = LDB.signals.IconSprite(marker.icon1ID);
+                }
+                if (marker.icon2ID == 0)
+                {
+                    sprite2 = emptySprite;
+                }
+                else
+                {
+                    sprite2 = LDB.signals.IconSprite(marker.icon2ID);
+                }
                 baseColor = marker.color;
                 desc = marker.desc;
                 alwaysDisplay = marker.alwaysDisplay;
                 throughPlanet = marker.throughPlanet;
                 ShowArrow = marker.ShowArrow;
 
+                newOne = false;
                 deleteButton.SetActive(true);
 
             }
@@ -125,22 +141,23 @@ namespace DSPMarker
                 alwaysDisplay = true;
                 throughPlanet = true;
                 ShowArrow = true;
+                newOne = true;
 
                 deleteButton.SetActive(false);
 
             }
-            MarkerEditor.iconBox1.GetComponent<Image>().sprite = sprite1;
-            MarkerEditor.markerPrefab.transform.Find("round/pinBaseIcon1").gameObject.GetComponent<Image>().sprite = sprite1;
-            MarkerEditor.iconBox2.GetComponent<Image>().sprite = sprite2;
-            MarkerEditor.markerPrefab.transform.Find("round/pinBaseIcon2").gameObject.GetComponent<Image>().sprite = sprite2;
+            iconBox1.GetComponent<Image>().sprite = sprite1;
+            markerPrefab.transform.Find("round/pinBaseIcon1").gameObject.GetComponent<Image>().sprite = sprite1;
+            iconBox2.GetComponent<Image>().sprite = sprite2;
+            markerPrefab.transform.Find("round/pinBaseIcon2").gameObject.GetComponent<Image>().sprite = sprite2;
             var halfColor = new Color(baseColor.r * 0.3f, baseColor.g * 0.3f, baseColor.b * 0.3f, 1f);
-            MarkerEditor.markerPrefab.GetComponent<Image>().color = baseColor;
-            MarkerEditor.markerPrefab.transform.Find("round").gameObject.GetComponent<Image>().color = halfColor;
-            MarkerEditor.markerPrefab.transform.Find("round/pinBaseText").GetComponent<Text>().text = desc;
+            markerPrefab.GetComponent<Image>().color = baseColor;
+            markerPrefab.transform.Find("round").gameObject.GetComponent<Image>().color = halfColor;
+            markerPrefab.transform.Find("round/pinBaseText").GetComponent<Text>().text = desc;
             descBox.gameObject.GetComponent<InputField>().text = desc;
-            MarkerEditor.checkBox1.transform.Find("checked").gameObject.GetComponent<Image>().enabled = alwaysDisplay;
-            MarkerEditor.checkBox2.transform.Find("checked").gameObject.GetComponent<Image>().enabled = throughPlanet;
-            MarkerEditor.checkBox3.transform.Find("checked").gameObject.GetComponent<Image>().enabled = ShowArrow;
+            checkBox1.transform.Find("checked").gameObject.GetComponent<Image>().enabled = alwaysDisplay;
+            checkBox2.transform.Find("checked").gameObject.GetComponent<Image>().enabled = throughPlanet;
+            checkBox3.transform.Find("checked").gameObject.GetComponent<Image>().enabled = ShowArrow;
 
             window.SetActive(true);
 
@@ -283,6 +300,8 @@ namespace DSPMarker
             iconBox2.name = "iconBox2";
             iconBox2.transform.localPosition = new Vector3(115, -120, 0);
 
+
+
             //LogManager.Logger.LogInfo("---------------------------------------------------------make EditorWindow 4");
 
             //文字入力用オブジェクトタイトル
@@ -416,8 +435,11 @@ namespace DSPMarker
         //イベント
         public static void onClickApplyButton()
         {
-
-            var realRadius = GameMain.localPlanet.realRadius;
+            if (UISignalPicker.isOpened)
+            {
+                return;
+            }
+                var realRadius = GameMain.localPlanet.realRadius;
  
             MarkerPool.Marker marker = new MarkerPool.Marker();
             marker.planetID = GameMain.localPlanet.id;
@@ -430,17 +452,21 @@ namespace DSPMarker
             marker.ShowArrow = ShowArrow;
             //var num = GameMain.localPlanet.id * 100 + ID;
             
-            if(MarkerPool.markerPool.ContainsKey(ID))
+            if (!newOne)
             {
                 marker.pos = pos;
                 MarkerPool.markerPool[ID] = marker;
+                LogManager.Logger.LogInfo("------------------------------------------------------------------ID : " + ID);
+
             }
             else
             {
-                var num = GameMain.localPlanet.id * 100 + number;
+                //var num = MarkerPool.markerCursor;
+                LogManager.Logger.LogInfo("------------------------------------------------------------------MarkerPool.markerCursor : " + MarkerPool.markerCursor);
                 marker.pos = GameMain.mainPlayer.position;
-                MarkerPool.markerPool.Add(num, marker);
-                MarkerPool.markerIdInPlanet[marker.planetID].Add(num);
+                MarkerPool.markerPool.Add(MarkerPool.markerCursor + 1 , marker);
+                MarkerPool.markerIdInPlanet[marker.planetID].Add(MarkerPool.markerCursor + 1);
+                MarkerPool.markerCursor++;
             }
             //LogManager.Logger.LogInfo("------------------------------------------------------------------num : " + num);
 
@@ -451,6 +477,11 @@ namespace DSPMarker
 
         public static void onClickDeleteButton()
         {
+            if (UISignalPicker.isOpened)
+            {
+                return;
+            }
+
             MarkerPool.markerPool.Remove(ID);
             MarkerPool.markerIdInPlanet[GameMain.localPlanet.id].Remove(ID);
             MarkerList.Refresh();
@@ -467,10 +498,10 @@ namespace DSPMarker
 
         public static void onClickColor(int i)
         {
-            baseColor = MarkerEditor.colorBox[i].GetComponent<Image>().color;
+            baseColor = colorBox[i].GetComponent<Image>().color;
             var halfColor = new Color(baseColor.r * 0.3f, baseColor.g * 0.3f, baseColor.b * 0.3f, 1f);
-            MarkerEditor.markerPrefab.GetComponent<Image>().color = baseColor;
-            MarkerEditor.markerPrefab.transform.Find("round").gameObject.GetComponent<Image>().color = halfColor;
+            markerPrefab.GetComponent<Image>().color = baseColor;
+            markerPrefab.transform.Find("round").gameObject.GetComponent<Image>().color = halfColor;
         }
 
 
@@ -481,7 +512,6 @@ namespace DSPMarker
 
             if (UISignalPicker.isOpened)
             {
-                UISignalPicker.Close();
                 return;
             }
             UISignalPicker.Popup(new Vector2(50f, 350f), new Action<int>(onIconBox1Changed));
@@ -490,7 +520,6 @@ namespace DSPMarker
         {
             if (UISignalPicker.isOpened)
             {
-                UISignalPicker.Close();
                 return;
             }
             UISignalPicker.Popup(new Vector2(50f, 350f), new Action<int>(onIconBox2Changed));
