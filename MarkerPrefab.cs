@@ -41,7 +41,7 @@ namespace DSPMarker
             markerGroup.name = "Marker Group";
             Destroy(markerGroup.GetComponent<UIVeinDetail>());
             markerGroup.SetActive(true);
-            LogManager.Logger.LogInfo("---------------------------------------------------------make marker 1");
+            //LogManager.Logger.LogInfo("---------------------------------------------------------make marker 1");
 
             pinBasePrefab.transform.SetParent(markerGroup.transform);
             pinBasePrefab.name = "pinBasePrefab";
@@ -53,7 +53,7 @@ namespace DSPMarker
             pinBasePrefab.transform.localPosition = new Vector3(200, 900, 0);
             pinBasePrefab.transform.localScale = new Vector3(1, 1, 1);
             pinBasePrefab.SetActive(false);
-            LogManager.Logger.LogInfo("---------------------------------------------------------make marker 2");
+            //LogManager.Logger.LogInfo("---------------------------------------------------------make marker 2");
 
             pinBaseRound.transform.SetParent(pinBasePrefab.transform);
             pinBaseRound.name = "round";
@@ -63,7 +63,7 @@ namespace DSPMarker
             pinBaseRound.transform.localPosition = new Vector3(0, 18, 0);
             pinBaseRound.transform.localScale = new Vector3(1, 1, 1);
             pinBaseRound.SetActive(true);
-            LogManager.Logger.LogInfo("---------------------------------------------------------make marker 3");
+            //LogManager.Logger.LogInfo("---------------------------------------------------------make marker 3");
 
             pinBaseText = Instantiate(markerGroup.transform.Find("vein-tip-prefab/info-text").gameObject, pinBaseRound.transform);
             pinBaseText.transform.SetParent(pinBaseRound.transform);
@@ -83,6 +83,7 @@ namespace DSPMarker
             pinBaseText.GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Wrap;
             pinBaseText.GetComponent<Text>().verticalOverflow = VerticalWrapMode.Truncate;
             pinBaseText.GetComponent<Text>().resizeTextForBestFit = true;
+            pinBaseText.GetComponent<Text>().resizeTextMaxSize = 60;
             pinBaseText.GetComponent<Text>().fontSize = 30;
             //pinBaseText.GetComponent<Text>().resizeTextMaxSize = 35;
             pinBaseText.transform.localPosition = new Vector3(0, -28, 0);
@@ -90,7 +91,7 @@ namespace DSPMarker
             pinBaseText.SetActive(true);
             //pinBaseText.GetComponent<Text>().color = Color.magenta;
             //pinBaseText.GetComponent<Text>().fontSize = 50;
-            LogManager.Logger.LogInfo("---------------------------------------------------------make marker 4");
+           // LogManager.Logger.LogInfo("---------------------------------------------------------make marker 4");
 
             pinBaseIcon1.AddComponent<Image>().sprite = LDB.techs.Select(1001).iconSprite;
             pinBaseIcon1.name = "pinBaseIcon1";
@@ -100,7 +101,7 @@ namespace DSPMarker
             pinBaseIcon1.transform.localPosition = new Vector3(-30, 30, 0);
             pinBaseIcon1.transform.localScale = new Vector3(1, 1, 1);
             pinBaseIcon1.SetActive(true);
-            LogManager.Logger.LogInfo("---------------------------------------------------------make marker 5");
+            //LogManager.Logger.LogInfo("---------------------------------------------------------make marker 5");
 
             pinBaseIcon2.AddComponent<Image>().sprite = LDB.recipes.Select(2).iconSprite;
             pinBaseIcon2.name = "pinBaseIcon2";
@@ -110,11 +111,11 @@ namespace DSPMarker
             pinBaseIcon2.transform.localPosition = new Vector3(30, 30, 0);
             pinBaseIcon2.transform.localScale = new Vector3(1, 1, 1);
             pinBaseIcon2.SetActive(true);
-            LogManager.Logger.LogInfo("---------------------------------------------------------make marker 6");
+            //LogManager.Logger.LogInfo("---------------------------------------------------------make marker 6");
 
             Destroy(markerGroup.transform.Find("vein-tip-prefab").gameObject);
             Destroy(markerGroup.transform.Find("vein-tip-cursor").gameObject);
-            LogManager.Logger.LogInfo("---------------------------------------------------------make marker end");
+            //LogManager.Logger.LogInfo("---------------------------------------------------------make marker end");
 
 
         }

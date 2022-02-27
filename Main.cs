@@ -29,7 +29,7 @@ using crecheng.DSPModSave;
 namespace DSPMarker
 {
 
-    [BepInPlugin("Appun.DSP.plugin.Marker", "DSPMarker", "0.2.0")]
+    [BepInPlugin("Appun.DSP.plugin.Marker", "DSPMarker", "0.0.2")]
     [BepInProcess("DSPGAME.exe")]
     [BepInDependency(DSPModSavePlugin.MODGUID)]
 
@@ -42,9 +42,10 @@ namespace DSPMarker
 
         //public static ConfigEntry<bool> ShowStationInfo;
         public static ConfigEntry<bool> DisableKeyTips;
-        public static ConfigEntry<bool> alwaysDisplay;
-        public static ConfigEntry<bool> throughPlanet;
-        public static ConfigEntry<bool> ShowArrow;
+        //public static ConfigEntry<bool> alwaysDisplay;
+        //public static ConfigEntry<bool> throughPlanet;
+        //public static ConfigEntry<bool> ShowArrow;
+        public static ConfigEntry<int> maxMarkers;
         public static bool showList = true;
 
 
@@ -58,7 +59,7 @@ namespace DSPMarker
         public static Sprite roundSprite;
         public static Sprite ButtonSprite;
 
-        public static int maxMarker = 20;
+        public static int maxMarker;
         public static int markerCount = 0;
 
         //public static string jsonFilePath;
@@ -72,10 +73,12 @@ namespace DSPMarker
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
 
             ////configの設定
-            DisableKeyTips = Config.Bind("General", "DisableKeyTips", false, "Disable Key Tips on right side");
-            alwaysDisplay = Config.Bind("General", "DisableKeyTips", true, "Disable Key Tips on right side");
-            throughPlanet = Config.Bind("General", "DisableKeyTips", true, "Disable Key Tips on right side");
-            ShowArrow = Config.Bind("General", "DisableKeyTips", true, "Disable Key Tips on right side");
+            DisableKeyTips = Config.Bind("UI", "DisableKeyTips", true, "Disable Key Tips on right side");
+            maxMarkers = Config.Bind("Marker", "maxMarker", 20, "Maximum number of markers");
+            maxMarker = maxMarkers.Value;
+            //alwaysDisplay = Config.Bind("General", "DisableKeyTips", true, "Disable Key Tips on right side");
+            //throughPlanet = Config.Bind("General", "DisableKeyTips", true, "Disable Key Tips on right side");
+            //ShowArrow = Config.Bind("General", "DisableKeyTips", true, "Disable Key Tips on right side");
             ////maxCount = Config.Bind("General", "maxCount", 200, "Inventory Column Count");
 
             //jsonFilePath = Path.Combine(Paths.ConfigPath, "markers.json");
@@ -121,27 +124,34 @@ namespace DSPMarker
             {
                 return;
             }
-            LogManager.Logger.LogInfo("---------------------------------------------------------GameMain.data != null ");
+            //LogManager.Logger.LogInfo("---------------------------------------------------------GameMain.data != null ");
 
-            if (GameMain.localPlanet == null)
-            {
-                //LogManager.Logger.LogInfo("---------------------------------------------------------GameMain.localPlanet : non");
-                return;
-            }
-            LogManager.Logger.LogInfo("---------------------------------------------------------GameMain.localPlanet != null ");
+            //LogManager.Logger.LogInfo("---------------------------------------------------------GameMain.localPlanet != null ");
 
             //LogManager.Logger.LogInfo("---------------------------------------------------------GameMain.localPlanet : " + GameMain.localPlanet.id);
-
-            if (UIGame.viewMode != EViewMode.Sail && UIGame.viewMode != EViewMode.Normal && UIGame.viewMode != EViewMode.Globe && UIGame.viewMode != EViewMode.Build)
-            {
-                return;
-            }
-            LogManager.Logger.LogInfo("---------------------------------------------------------UIGame.viewMode ");
             if (DSPGame.Game != null && DSPGame.Game.isMenuDemo || !GameMain.isRunning)
             {
                 return;
             }
-            LogManager.Logger.LogInfo("---------------------------------------------------------DSPGame.Game != null ");
+
+            if (GameMain.localPlanet == null)
+            {
+                MarkerList.markerList.SetActive(false);
+                MarkerPrefab.markerGroup.SetActive(false);
+                //LogManager.Logger.LogInfo("---------------------------------------------------------GameMain.localPlanet : non");
+                return;
+            }
+
+            if (UIGame.viewMode == EViewMode.Starmap || UIGame.viewMode == EViewMode.MilkyWay || UIGame.viewMode == EViewMode.DysonEditor)
+            // if (UIGame.viewMode != EViewMode.Sail && UIGame.viewMode != EViewMode.Normal && UIGame.viewMode != EViewMode.Globe && UIGame.viewMode != EViewMode.Build)
+            {
+                MarkerList.markerList.SetActive(false);
+                MarkerPrefab.markerGroup.SetActive(false);
+
+                return;
+            }
+            //LogManager.Logger.LogInfo("---------------------------------------------------------UIGame.viewMode ");
+            //LogManager.Logger.LogInfo("---------------------------------------------------------DSPGame.Game != null ");
             //if (GameMain.data.mainPlayer.sailing)
             //{
             //    MarkerPrefab.markerGroup.SetActive(false);
@@ -151,10 +161,12 @@ namespace DSPMarker
             //    return;
             //}
             //LogManager.Logger.LogInfo("---------------------------------------------------------no sailing ");
-            MarkerPrefab.markerGroup.SetActive(true);
-            MarkerList.listBase.SetActive(true);
+            MarkerList.markerList.SetActive(true);
 
-            LogManager.Logger.LogInfo("---------------------------------------------------------update ");
+            MarkerPrefab.markerGroup.SetActive(true);
+            //MarkerList.listBase.SetActive(true);
+
+            //LogManager.Logger.LogInfo("---------------------------------------------------------update ");
 
             MarkerPool.Update();
             ArrowPool.Update();

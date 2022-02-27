@@ -344,7 +344,6 @@
     <Compile Include="MarkerList.cs" />
     <Compile Include="MarkerPool.cs" />
     <Compile Include="Patch.cs" />
-    <Compile Include="test.cs" />
     <Compile Include="MarkerPrefab.cs" />
     <Compile Include="MarkerEditor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -352,7 +351,9 @@
   <ItemGroup>
     <None Include=".editorconfig" />
     <EmbeddedResource Include="marker" />
+    <None Include="manifest.json" />
     <None Include="packages.config" />
+    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

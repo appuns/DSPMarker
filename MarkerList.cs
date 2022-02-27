@@ -32,16 +32,16 @@ namespace DSPMarker
         public static GameObject boxBaseIcon2 = new GameObject();
         public static GameObject modeText = new GameObject();
 
-        public static GameObject[] boxMarker = new GameObject[Main.maxMarker];
-        public static GameObject[] boxSquare = new GameObject[Main.maxMarker];
-        public static GameObject[] boxText = new GameObject[Main.maxMarker];
-        public static GameObject[] boxIcon1 = new GameObject[Main.maxMarker];
-        public static GameObject[] boxIcon2 = new GameObject[Main.maxMarker];
+        public static GameObject[] boxMarker;
+        public static GameObject[] boxSquare;
+        public static GameObject[] boxText;
+        public static GameObject[] boxIcon1;
+        public static GameObject[] boxIcon2;
 
         public static Sprite markerIcon;
         public static int boxSize = 40;
 
-        public static bool showList;
+        public static bool showList = true;
         public static bool editMode;
         //public static Sprite purgeIcon;
 
@@ -52,6 +52,12 @@ namespace DSPMarker
 
         public static void Create()
         {
+            boxMarker = new GameObject[Main.maxMarker];
+            boxSquare = new GameObject[Main.maxMarker];
+            boxText = new GameObject[Main.maxMarker];
+            boxIcon1 = new GameObject[Main.maxMarker];
+            boxIcon2 = new GameObject[Main.maxMarker];
+
             //ボタン＆リスト用オブジェクトの作成
             markerList = new GameObject();
             markerList.name = "MarkerList";
@@ -157,15 +163,15 @@ namespace DSPMarker
             boxBaseIcon2.transform.localScale = new Vector3(1, 1, 1);
 
             //リストの作成
-            int maxRow = (UIheight - 270 - 115) / boxSize;
+            int maxRow = (UIheight - 270 - 115 - 40 ) / boxSize;
+            float scale = (float)boxSize / 70;
             for (int i = 0; i < Main.maxMarker; i++)
             {
                 boxMarker[i] = Instantiate(boxBasePrefab.gameObject, listBase.transform);
                 boxMarker[i].name = "boxMarker" + i;
-                float scale = (float)boxSize / 70;
                 boxMarker[i].transform.localScale = new Vector3(scale, scale, 1);
-                int x = 18 - (boxSize + 3) * (i / maxRow);
-                int y = -77 - (boxSize + 3) * (i % maxRow);
+                int x = 20 - (boxSize + 3) * (i / maxRow);
+                int y = -68 - (boxSize + 3) * (i % maxRow);
                 boxMarker[i].transform.localPosition = new Vector3(x, y, 0);
                 boxSquare[i] = boxMarker[i].transform.Find("boxBaseSquare").gameObject;
                 boxText[i] = boxMarker[i].transform.Find("boxBaseText").gameObject;
@@ -193,7 +199,7 @@ namespace DSPMarker
         //リスト表示の切り替え
         public static void OnClickMarkerButton()
         {
-            showList = !listBase.gameObject.active;
+            showList = !showList;
             listBase.gameObject.SetActive(showList);
             markerButton.GetComponent<UIButton>().highlighted = showList;
 
@@ -232,9 +238,15 @@ namespace DSPMarker
                 {
                     MarkerEditor.Close();
                 }
-            }else
+            }else if (!GameMain.data.mainPlayer.sailing)
             {
-                var num = GameMain.localPlanet.id * 100 + i;
+                //GameMain.mainPlayer.gizmo.orderGizmos.Clear();
+                Array.Clear(GameMain.mainPlayer.orders.orderQueue, 0, GameMain.mainPlayer.orders.orderQueue.Length);
+                //LineGizmo.pool.Clear();
+                //CircleGizmo.pool.Clear();
+
+                int planetId = GameMain.data.localPlanet.id;
+                var num = MarkerPool.markerIdInPlanet[planetId][i];
                 //オーダー設定
                 OrderNode order = new OrderNode();
                 order.type = EOrderType.Move;
@@ -260,7 +272,7 @@ namespace DSPMarker
                 lineGizmo.color = MarkerPool.markerPool[num].color;
                 lineGizmo.relateObject = order;
                 lineGizmo.autoRefresh = true;
-                lineGizmo.width = 2f;
+                lineGizmo.width = 3f;
                 lineGizmo.alphaMultiplier = 0.5f;
                 lineGizmo.multiplier = 3f;
                 lineGizmo.spherical = true;
@@ -275,22 +287,25 @@ namespace DSPMarker
         //全ての右クリック
         public static void OnRightClick(GameObject obj)
         {
+            LogManager.Logger.LogInfo("--------------------------------------------------------obj.name : " + obj.name);
             if (obj.name == "markerButton")
             {
-                if (editMode)
+                if (!GameMain.data.mainPlayer.sailing)
                 {
-                    modeText.GetComponent<Text>().text = "Guide\nMode".Translate();
-                    MarkerEditor.Close();
-                    editMode = false;
+                    if (editMode)
+                    {
+                        modeText.GetComponent<Text>().text = "Guide\nMode".Translate();
+                        MarkerEditor.Close();
+                        editMode = false;
+                    }
+                    else
+                    {
+                        modeText.GetComponent<Text>().text = "Edit\nMode".Translate();
+                        editMode = true;
+                    }
+                    Refresh();
+                    //LogManager.Logger.LogInfo("---------------------------------------------------------markerButton RIGHT cLICK ");
                 }
-                else
-                {
-                    modeText.GetComponent<Text>().text = "Edit\nMode".Translate();
-                    editMode = true;
-                }
-                Refresh();
-                //LogManager.Logger.LogInfo("---------------------------------------------------------markerButton RIGHT cLICK ");
-
             }
             else
             {
@@ -336,8 +351,17 @@ namespace DSPMarker
                     boxSquare[i].GetComponent<Image>().color = new Color(marker.color.r * 0.3f, marker.color.g * 0.3f, marker.color.b * 0.3f, 1);
                     boxSquare[i].SetActive(true);
                     boxText[i].GetComponent<Text>().text = marker.desc;
-                    boxText[i].transform.localPosition = new Vector3(0, -15, 0);
-                    boxText[i].GetComponent<RectTransform>().sizeDelta = new Vector3(60, 35, 0);
+                    //boxText[i].transform.localPosition = new Vector3(0, -15, 0);
+                    //boxText[i].GetComponent<RectTransform>().sizeDelta = new Vector3(60, 35, 0);
+                    if (marker.icon1ID == 0 && marker.icon2ID == 0)
+                    {
+                        boxText[i].GetComponent<RectTransform>().sizeDelta = new Vector3(60, 60, 0);
+                        boxText[i].transform.localPosition = new Vector3(0, 0, 0);
+                    }else
+                    {
+                        boxText[i].GetComponent<RectTransform>().sizeDelta = new Vector3(60, 35, 0);
+                        boxText[i].transform.localPosition = new Vector3(0, -15, 0);
+                    }
                     boxText[i].SetActive(true);
 
                     if (marker.icon1ID == 0)
@@ -358,6 +382,18 @@ namespace DSPMarker
                         boxIcon2[i].GetComponent<Image>().sprite = LDB.signals.IconSprite(marker.icon2ID);
                         boxIcon2[i].SetActive(true);
                     }
+                    if (marker.icon2ID == 0 && marker.desc == "")
+                    {
+                        boxIcon1[i].GetComponent<RectTransform>().sizeDelta = new Vector3(60, 60, 0);
+                        boxIcon1[i].transform.localPosition = new Vector3(0, 0, 0);
+                    }
+                    else
+                    {
+                        boxIcon1[i].GetComponent<RectTransform>().sizeDelta = new Vector3(30, 30, 0);
+                        boxIcon1[i].transform.localPosition = new Vector3(-15, 15, 0);
+                    }
+
+
                 }
                 else
                 {

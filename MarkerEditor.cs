@@ -49,6 +49,7 @@ namespace DSPMarker
         public static GameObject closeButton = new GameObject();
         public static GameObject applyButton = new GameObject();
         public static GameObject deleteButton = new GameObject();
+        public static GameObject crearButton = new GameObject();
         public static GameObject previewText = new GameObject();
 
         public static Color[] color = new Color[7];
@@ -137,7 +138,7 @@ namespace DSPMarker
                 sprite1 = emptySprite;
                 sprite2 = emptySprite;
                 baseColor = color[0];
-                desc = "enter\ndesc";
+                desc = "";
                 alwaysDisplay = true;
                 throughPlanet = true;
                 ShowArrow = true;
@@ -146,18 +147,19 @@ namespace DSPMarker
                 deleteButton.SetActive(false);
 
             }
-            iconBox1.GetComponent<Image>().sprite = sprite1;
-            markerPrefab.transform.Find("round/pinBaseIcon1").gameObject.GetComponent<Image>().sprite = sprite1;
-            iconBox2.GetComponent<Image>().sprite = sprite2;
-            markerPrefab.transform.Find("round/pinBaseIcon2").gameObject.GetComponent<Image>().sprite = sprite2;
-            var halfColor = new Color(baseColor.r * 0.3f, baseColor.g * 0.3f, baseColor.b * 0.3f, 1f);
-            markerPrefab.GetComponent<Image>().color = baseColor;
-            markerPrefab.transform.Find("round").gameObject.GetComponent<Image>().color = halfColor;
-            markerPrefab.transform.Find("round/pinBaseText").GetComponent<Text>().text = desc;
-            descBox.gameObject.GetComponent<InputField>().text = desc;
-            checkBox1.transform.Find("checked").gameObject.GetComponent<Image>().enabled = alwaysDisplay;
-            checkBox2.transform.Find("checked").gameObject.GetComponent<Image>().enabled = throughPlanet;
-            checkBox3.transform.Find("checked").gameObject.GetComponent<Image>().enabled = ShowArrow;
+            Refresh();
+            //iconBox1.GetComponent<Image>().sprite = sprite1;
+            //markerPrefab.transform.Find("round/pinBaseIcon1").gameObject.GetComponent<Image>().sprite = sprite1;
+            //iconBox2.GetComponent<Image>().sprite = sprite2;
+            //markerPrefab.transform.Find("round/pinBaseIcon2").gameObject.GetComponent<Image>().sprite = sprite2;
+            //var halfColor = new Color(baseColor.r * 0.3f, baseColor.g * 0.3f, baseColor.b * 0.3f, 1f);
+            //markerPrefab.GetComponent<Image>().color = baseColor;
+            //markerPrefab.transform.Find("round").gameObject.GetComponent<Image>().color = halfColor;
+            //markerPrefab.transform.Find("round/pinBaseText").GetComponent<Text>().text = desc;
+            //descBox.gameObject.GetComponent<InputField>().text = desc;
+            //checkBox1.transform.Find("checked").gameObject.GetComponent<Image>().enabled = alwaysDisplay;
+            //checkBox2.transform.Find("checked").gameObject.GetComponent<Image>().enabled = throughPlanet;
+            //checkBox3.transform.Find("checked").gameObject.GetComponent<Image>().enabled = ShowArrow;
 
             window.SetActive(true);
 
@@ -170,14 +172,6 @@ namespace DSPMarker
         {
             window.SetActive(false);
         }
-
-        //public static void update()
-        //{
-        //    if()
-
-
-
-        //}
 
 
 
@@ -235,7 +229,7 @@ namespace DSPMarker
             //色選択用オブジェクトタイトル
             colorTitle = Instantiate(window.transform.Find("panel-bg/title-text").gameObject, window.transform);
             colorTitle.name = "colorTitle";
-            colorTitle.transform.localPosition = new Vector3(-45, -70, 0);
+            colorTitle.transform.localPosition = new Vector3(-65, -70, 0);
             colorTitle.GetComponent<Text>().alignment = TextAnchor.MiddleRight;
             colorTitle.GetComponent<Text>().text = "Color".Translate();
             colorTitle.GetComponent<Text>().fontSize = 14;
@@ -244,7 +238,7 @@ namespace DSPMarker
             //色選択用オブジェクト枠
             colorSelecter = Instantiate(GameObject.Find("UI Root/Overlay Canvas/In Game/Windows/Mecha Window/appearance/card-mask").gameObject, window.transform);
             colorSelecter.name = "colorSelecter"; ;
-            colorSelecter.transform.localPosition = new Vector3(135, -103, 0);
+            colorSelecter.transform.localPosition = new Vector3(115, -103, 0);
             colorSelecter.SetActive(true);
             int count = colorSelecter.transform.childCount;
             foreach (Transform n in colorSelecter.transform)
@@ -277,7 +271,7 @@ namespace DSPMarker
             //アイコン選択用オブジェクトタイトル
             iconTitle = Instantiate(colorTitle, window.transform);
             iconTitle.name = "iconTitle";
-            iconTitle.transform.localPosition = new Vector3(-45, -125, 0);
+            iconTitle.transform.localPosition = new Vector3(-65, -125, 0);
             iconTitle.GetComponent<Text>().text = "Icons".Translate();
 
 
@@ -291,14 +285,14 @@ namespace DSPMarker
             iconBox1.GetComponent<RectTransform>().pivot = new Vector2(0, 1);
             iconBox1.GetComponent<RectTransform>().sizeDelta = new Vector3(50, 50, 0);
             iconBox1.AddComponent<Button>();
-            iconBox1.transform.localPosition = new Vector3(65, -120, 0);
+            iconBox1.transform.localPosition = new Vector3(45, -120, 0);
             iconBox1.SetActive(true);
 
             emptySprite = iconBox1.GetComponent<Image>().sprite;
 
             iconBox2 = Instantiate(iconBox1.gameObject, window.transform);
             iconBox2.name = "iconBox2";
-            iconBox2.transform.localPosition = new Vector3(115, -120, 0);
+            iconBox2.transform.localPosition = new Vector3(95, -120, 0);
 
 
 
@@ -307,7 +301,7 @@ namespace DSPMarker
             //文字入力用オブジェクトタイトル
             descTitle = Instantiate(colorTitle, window.transform);
             descTitle.name = "descTitle";
-            descTitle.transform.localPosition = new Vector3(-45, -185, 0);
+            descTitle.transform.localPosition = new Vector3(-65, -185, 0);
             descTitle.GetComponent<Text>().text = "Description".Translate();
             
             //preview
@@ -331,7 +325,7 @@ namespace DSPMarker
             descBox.GetComponent<RectTransform>().offsetMin = new Vector2(-65f, -35f);
             descBox.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
             descBox.GetComponent<RectTransform>().sizeDelta = new Vector3(130, 70, 0);
-            descBox.transform.localPosition = new Vector3(115, -205, 0);
+            descBox.transform.localPosition = new Vector3(95, -205, 0);
             descBox.transform.localScale = new Vector3(0.7f, 0.7f, 0);
 
             //descBox.AddComponent<Outline>().effectDistance = new Vector2(2, -2);
@@ -348,7 +342,7 @@ namespace DSPMarker
             //チェックボックス１タイトル
             checkTitle1 = Instantiate(colorTitle, window.transform);
             checkTitle1.name = "checkTitle1";
-            checkTitle1.transform.localPosition = new Vector3(-240, -250, 0);
+            checkTitle1.transform.localPosition = new Vector3(-260, -250, 0);
             checkTitle1.GetComponent<Text>().text = "Always displayed".Translate();
             checkTitle1.GetComponent<RectTransform>().sizeDelta = new Vector3(300, 32, 0);
             //LogManager.Logger.LogInfo("---------------------------------------------------------make EditorWindow 7");
@@ -362,32 +356,32 @@ namespace DSPMarker
             checkBox1.GetComponent<RectTransform>().pivot = new Vector2(0, 1);
             checkBox1.AddComponent<Button>();
             checkBox1.transform.Find("checked").gameObject.GetComponent<Image>().enabled = true;
-            checkBox1.transform.localPosition = new Vector3(65, -250, 0);
+            checkBox1.transform.localPosition = new Vector3(45, -250, 0);
             Destroy(checkBox1.transform.Find("text").gameObject);
             //LogManager.Logger.LogInfo("---------------------------------------------------------make EditorWindow 8");
 
             //チェックボックス２タイトル
             checkTitle2 = Instantiate(checkTitle1, window.transform);
             checkTitle2.name = "checkTitle2";
-            checkTitle2.transform.localPosition = new Vector3(-240, -285, 0);
+            checkTitle2.transform.localPosition = new Vector3(-260, -285, 0);
             checkTitle2.GetComponent<Text>().text = "Seen through the planet".Translate();
 
             //チェックボックス２
             checkBox2 = Instantiate(checkBox1.gameObject, window.transform);
             checkBox2.name = "checkBox2";
-            checkBox2.transform.localPosition = new Vector3(65, -285, 0);
+            checkBox2.transform.localPosition = new Vector3(45, -285, 0);
             //LogManager.Logger.LogInfo("---------------------------------------------------------make EditorWindow 9");
 
             //チェックボックス３タイトル
             checkTitle3 = Instantiate(checkTitle1, window.transform);
             checkTitle3.name = "checkTitle3";
-            checkTitle3.transform.localPosition = new Vector3(-240, -320, 0);
+            checkTitle3.transform.localPosition = new Vector3(-260, -320, 0);
             checkTitle3.GetComponent<Text>().text = "Show the Arrow Guide".Translate();
 
             //チェックボックス３
             checkBox3 = Instantiate(checkBox1.gameObject, window.transform);
             checkBox3.name = "checkBox3";
-            checkBox3.transform.localPosition = new Vector3(65, -320, 0);
+            checkBox3.transform.localPosition = new Vector3(45, -320, 0);
             //LogManager.Logger.LogInfo("---------------------------------------------------------make EditorWindow 10");
 
             //「適応」ボタン
@@ -403,10 +397,18 @@ namespace DSPMarker
             deleteButton = Instantiate(applyButton.gameObject, window.transform);
             deleteButton.transform.localPosition = new Vector3(0, -400, 0);
             deleteButton.name = "deleteButton";
-            deleteButton.GetComponentInChildren<Text>().text = "delete".Translate();
+            deleteButton.GetComponentInChildren<Text>().text = "Delete".Translate();
             deleteButton.GetComponent<Image>().color = new Color(0.7f, 0.5f, 0, 1);
             deleteButton.SetActive(true);
 
+            //「crear」ボタン
+            crearButton = Instantiate(applyButton.gameObject, window.transform);
+            crearButton.transform.localPosition = new Vector3(200, -145, 0);
+            crearButton.name = "crearButton";
+            crearButton.GetComponent<RectTransform>().sizeDelta = new Vector2(40, 25);
+            crearButton.GetComponentInChildren<Text>().text = "Crear".Translate();
+            crearButton.GetComponent<Image>().color = new Color(0.240f, 0.55f, 0.65f, 0.7f);
+            crearButton.SetActive(true);
 
             //閉じるボタン
             closeButton = window.transform.Find("panel-bg/btn-box/close-btn").gameObject;
@@ -425,7 +427,66 @@ namespace DSPMarker
 
             applyButton.GetComponent<Button>().onClick.AddListener(onClickApplyButton);
             deleteButton.GetComponent<Button>().onClick.AddListener(onClickDeleteButton);
+            crearButton.GetComponent<Button>().onClick.AddListener(onClickCrearButton);
 
+
+
+
+        }
+
+        public static void Refresh()
+        {
+            var halfColor = new Color(baseColor.r * 0.3f, baseColor.g * 0.3f, baseColor.b * 0.3f, 1f);
+            markerPrefab.GetComponent<Image>().color = baseColor;
+            markerPrefab.transform.Find("round").gameObject.GetComponent<Image>().color = halfColor;
+
+            if (iconID1 == 0)
+            {
+                iconBox1.GetComponent<Image>().sprite = emptySprite;
+                markerPrefab.transform.Find("round/pinBaseIcon1").gameObject.SetActive(false);
+            }
+            else
+            {
+                iconBox1.GetComponent<Image>().sprite = LDB.signals.IconSprite(iconID1);
+                markerPrefab.transform.Find("round/pinBaseIcon1").gameObject.SetActive(true);
+                markerPrefab.transform.Find("round/pinBaseIcon1").gameObject.GetComponent<Image>().sprite = LDB.signals.IconSprite(iconID1);
+            }
+            if (iconID2 == 0)
+            {
+                iconBox2.GetComponent<Image>().sprite = emptySprite;
+                markerPrefab.transform.Find("round/pinBaseIcon2").gameObject.SetActive(false);
+            }
+            else
+            {
+                //iconBox2.SetActive(true);
+                iconBox2.GetComponent<Image>().sprite = LDB.signals.IconSprite(iconID2);
+                markerPrefab.transform.Find("round/pinBaseIcon2").gameObject.SetActive(true);
+                markerPrefab.transform.Find("round/pinBaseIcon2").gameObject.GetComponent<Image>().sprite = LDB.signals.IconSprite(iconID2);
+            }
+            descBox.gameObject.GetComponent<InputField>().text = desc;
+            markerPrefab.transform.Find("round/pinBaseText").GetComponent<Text>().text = desc;
+
+            if (iconID1 == 0 && iconID2 == 0)
+            {
+                markerPrefab.transform.Find("round/pinBaseText").GetComponent<RectTransform>().sizeDelta = new Vector3(130, 130, 0);
+                markerPrefab.transform.Find("round/pinBaseText").transform.localPosition = new Vector3(0, 0, 0);
+            }
+            else
+            {
+                markerPrefab.transform.Find("round/pinBaseText").GetComponent<RectTransform>().sizeDelta = new Vector3(130, 70, 0);
+                markerPrefab.transform.Find("round/pinBaseText").transform.localPosition = new Vector3(0, -28, 0);
+            }
+
+            if (iconID2 == 0 && desc == "")
+            {
+                markerPrefab.transform.Find("round/pinBaseIcon1").GetComponent<RectTransform>().sizeDelta = new Vector3(130, 130, 0);
+                markerPrefab.transform.Find("round/pinBaseIcon1").transform.localPosition = new Vector3(0, 0, 0);
+            }
+            else
+            {
+                markerPrefab.transform.Find("round/pinBaseIcon1").GetComponent<RectTransform>().sizeDelta = new Vector3(60, 60, 0);
+                markerPrefab.transform.Find("round/pinBaseIcon1").transform.localPosition = new Vector3(-30, 30, 0);
+            }
 
 
 
@@ -456,13 +517,13 @@ namespace DSPMarker
             {
                 marker.pos = pos;
                 MarkerPool.markerPool[ID] = marker;
-                LogManager.Logger.LogInfo("------------------------------------------------------------------ID : " + ID);
+                //LogManager.Logger.LogInfo("------------------------------------------------------------------ID : " + ID);
 
             }
             else
             {
                 //var num = MarkerPool.markerCursor;
-                LogManager.Logger.LogInfo("------------------------------------------------------------------MarkerPool.markerCursor : " + MarkerPool.markerCursor);
+                //LogManager.Logger.LogInfo("------------------------------------------------------------------MarkerPool.markerCursor : " + MarkerPool.markerCursor);
                 marker.pos = GameMain.mainPlayer.position;
                 MarkerPool.markerPool.Add(MarkerPool.markerCursor + 1 , marker);
                 MarkerPool.markerIdInPlanet[marker.planetID].Add(MarkerPool.markerCursor + 1);
@@ -490,6 +551,17 @@ namespace DSPMarker
 
         }
 
+        public static void onClickCrearButton()
+        {
+            if (UISignalPicker.isOpened)
+            {
+                return;
+            }
+            iconID1 = 0;
+            iconID2 = 0;
+            Refresh();
+        }
+
 
         public static void onClickCloseButton()
         {
@@ -498,10 +570,12 @@ namespace DSPMarker
 
         public static void onClickColor(int i)
         {
+            if (UISignalPicker.isOpened)
+            {
+                return;
+            }
             baseColor = colorBox[i].GetComponent<Image>().color;
-            var halfColor = new Color(baseColor.r * 0.3f, baseColor.g * 0.3f, baseColor.b * 0.3f, 1f);
-            markerPrefab.GetComponent<Image>().color = baseColor;
-            markerPrefab.transform.Find("round").gameObject.GetComponent<Image>().color = halfColor;
+            Refresh();
         }
 
 
@@ -527,45 +601,35 @@ namespace DSPMarker
 
         public static void onIconBox1Changed(int signalId)
         {
-            Sprite sprite = LDB.signals.IconSprite(signalId);
-            if (sprite != null)
-            {
-                MarkerEditor.iconBox1.GetComponent<Image>().sprite = sprite;
-                MarkerEditor.markerPrefab.transform.Find("round/pinBaseIcon1").gameObject.GetComponent<Image>().sprite = sprite;
-                iconID1 = signalId;
-            }
+            iconID1 = signalId;
+            Refresh();
         }
         public static void onIconBox2Changed(int signalId)
         {
-            Sprite sprite = LDB.signals.IconSprite(signalId);
-            if (sprite != null)
-            {
-                MarkerEditor.iconBox2.GetComponent<Image>().sprite = sprite;
-                MarkerEditor.markerPrefab.transform.Find("round/pinBaseIcon2").gameObject.GetComponent<Image>().sprite = sprite;
-                iconID2 = signalId;
-            }
+            iconID2 = signalId;
+            Refresh();
         }
         public static void onClickCheckBox1()
         {
             alwaysDisplay = !alwaysDisplay;
-            MarkerEditor.checkBox1.transform.Find("checked").gameObject.GetComponent<Image>().enabled = alwaysDisplay;
+            checkBox1.transform.Find("checked").gameObject.GetComponent<Image>().enabled = alwaysDisplay;
         }
 
         public static void onClickCheckBox2()
         {
             throughPlanet = !throughPlanet;
-            MarkerEditor.checkBox2.transform.Find("checked").gameObject.GetComponent<Image>().enabled = throughPlanet;
+            checkBox2.transform.Find("checked").gameObject.GetComponent<Image>().enabled = throughPlanet;
         }
         public static void onClickCheckBox3()
         {
             ShowArrow = !ShowArrow;
-            MarkerEditor.checkBox3.transform.Find("checked").gameObject.GetComponent<Image>().enabled = ShowArrow;
+            checkBox3.transform.Find("checked").gameObject.GetComponent<Image>().enabled = ShowArrow;
         }
 
         public static void onEndEditDescBox(string str)
         {
-            MarkerEditor.markerPrefab.transform.Find("round/pinBaseText").GetComponent<Text>().text = str;
             desc = str;
+            Refresh();
         }
 
     }

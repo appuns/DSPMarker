@@ -27,13 +27,8 @@ namespace DSPMarker
     internal class ArrowPool : MonoBehaviour
     {
         public static GameObject guideArrowBase;
-        public static GameObject[] guideArrow = new GameObject[Main.maxMarker];
+        public static GameObject[] guideArrow;
 
-
-        public static void Create()
-        {
-
-        }
 
         public static void Update()
         {
@@ -93,6 +88,8 @@ namespace DSPMarker
             }
             else
             {
+                guideArrow = new GameObject[Main.maxMarker];
+
                 //作成
                 GameObject Player = GameMain.data.mainPlayer.gameObject;
 

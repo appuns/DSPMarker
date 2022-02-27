@@ -35,12 +35,12 @@ namespace DSPMarker
         //public static int Main.maxMarker = 20;
         public static bool markerEnable = true;
 
-        public static GameObject[] markers = new GameObject[Main.maxMarker];
-        public static Image[] Base = new Image[Main.maxMarker];
-        public static Image[] BaseRound = new Image[Main.maxMarker];
-        public static Image[] icon1s = new Image[Main.maxMarker];
-        public static Image[] icon2s = new Image[Main.maxMarker];
-        public static Text[] decs = new Text[Main.maxMarker];
+        public static GameObject[] markers;
+        public static Image[] Base;
+        public static Image[] BaseRound;
+        public static Image[] icon1s;
+        public static Image[] icon2s;
+        public static Text[] decs;
 
         public static bool markerCreated = false;
 
@@ -74,6 +74,14 @@ namespace DSPMarker
 
         public static void Create()
         {
+
+            markers = new GameObject[Main.maxMarker];
+            Base = new Image[Main.maxMarker];
+            BaseRound = new Image[Main.maxMarker];
+            icon1s = new Image[Main.maxMarker];
+            icon2s = new Image[Main.maxMarker];
+            decs = new Text[Main.maxMarker];
+
             for (int i = 0; i < Main.maxMarker; i++)
             {
                 markers[i] = Instantiate(MarkerPrefab.pinBasePrefab.gameObject, MarkerPrefab.markerGroup.transform);
@@ -130,6 +138,28 @@ namespace DSPMarker
                             icon2s[i].sprite = LDB.signals.IconSprite(markerPool[num].icon2ID);
                         }
                         decs[i].text = markerPool[num].desc;
+                        if(markerPool[num].icon1ID == 0 && markerPool[num].icon2ID == 0)
+                        {
+                            decs[i].GetComponent<RectTransform>().sizeDelta = new Vector3(130, 130, 0);
+                            decs[i].transform.localPosition = new Vector3(0, 0, 0);
+                        }else
+                        {
+                            decs[i].GetComponent<RectTransform>().sizeDelta = new Vector3(130, 70, 0);
+                            decs[i].transform.localPosition = new Vector3(0, -28, 0);
+                        }
+                        if (markerPool[num].icon2ID == 0 && markerPool[num].desc == "")
+                        {
+                            icon1s[i].GetComponent<RectTransform>().sizeDelta = new Vector3(130, 130, 0);
+                            icon1s[i].transform.localPosition = new Vector3(0, 0, 0);
+                        }
+                        else
+                        {
+                            icon1s[i].GetComponent<RectTransform>().sizeDelta = new Vector3(60, 60, 0);
+                            icon1s[i].transform.localPosition = new Vector3(-30, 30, 0);
+                        }
+
+
+
                     }
                 }
             }
