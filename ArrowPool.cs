@@ -38,10 +38,15 @@ namespace DSPMarker
                 List<int> list = new List<int>();
                 MarkerPool.markerIdInPlanet.Add(planetId, list);
             }
+            if (!MarkerList.showList)
+            {
+                guideArrowBase.gameObject.SetActive(false);
+                return;
+            }
 
             if (guideArrowBase)
             {
-                if (GameMain.localPlanet != null && !GameMain.data.mainPlayer.sailing)
+                if (!MarkerList.showList || GameMain.localPlanet != null && !GameMain.data.mainPlayer.sailing)
                 {
                     GameObject Player = GameMain.data.mainPlayer.gameObject;
                     if (Player.activeSelf)

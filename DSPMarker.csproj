@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\..\..\VS2019\</OutputPath>
+    <OutputPath>..\..\VS2019\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -351,14 +351,26 @@
   <ItemGroup>
     <None Include=".editorconfig" />
     <EmbeddedResource Include="marker" />
-    <None Include="manifest.json" />
+    <None Include="manifest.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
-    <None Include="README.md" />
+    <None Include="README.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetPath)" "C:\Program Files (x86)\Steam\steamapps\common\Dyson Sphere Program\BepInEx\plugins" /Y
-xcopy "$(TargetPath)" "$(ProjectDir)" /Y</PostBuildEvent>
+xcopy "$(TargetPath)" "$(ProjectDir)$(ProjectName)" /Y
+xcopy "$(ProjectDir)README.md" "$(ProjectDir)$(ProjectName)" /Y
+xcopy "$(ProjectDir)manifest.json" "$(ProjectDir)$(ProjectName)" /Y
+xcopy "$(ProjectDir)icon.png" "$(ProjectDir)$(ProjectName)" /Y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.

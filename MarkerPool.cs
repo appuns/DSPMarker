@@ -108,7 +108,6 @@ namespace DSPMarker
                 MarkerPool.markerIdInPlanet.Add(planetId, list);
             }
 
-
             if (markerIdInPlanet[planetId].Count > 0 && markerCreated)
             {
                 for (int i = 0; i < markerIdInPlanet[planetId].Count; i++)
@@ -138,11 +137,12 @@ namespace DSPMarker
                             icon2s[i].sprite = LDB.signals.IconSprite(markerPool[num].icon2ID);
                         }
                         decs[i].text = markerPool[num].desc;
-                        if(markerPool[num].icon1ID == 0 && markerPool[num].icon2ID == 0)
+                        if (markerPool[num].icon1ID == 0 && markerPool[num].icon2ID == 0)
                         {
                             decs[i].GetComponent<RectTransform>().sizeDelta = new Vector3(130, 130, 0);
                             decs[i].transform.localPosition = new Vector3(0, 0, 0);
-                        }else
+                        }
+                        else
                         {
                             decs[i].GetComponent<RectTransform>().sizeDelta = new Vector3(130, 70, 0);
                             decs[i].transform.localPosition = new Vector3(0, -28, 0);
@@ -177,11 +177,16 @@ namespace DSPMarker
         public static void Update()
         {
             //LogManager.Logger.LogInfo("------------------------------------------------------------------markerPool Update ");
-
-            if (!markerEnable)
+            if (!MarkerList.showList)
             {
+                MarkerPrefab.markerGroup.SetActive(false);
                 return;
             }
+
+            //if (!markerEnable)
+            //{
+            //    return;
+            //}
             int planetId = GameMain.data.localPlanet.id;
             MarkerPrefab.markerGroup.SetActive(true);
 
@@ -195,7 +200,7 @@ namespace DSPMarker
                 if (MarkerPool.markerIdInPlanet.ContainsKey(planetId) && i < markerIdInPlanet[planetId].Count)
                 {
                     var num = markerIdInPlanet[planetId][i];
-                    TransformPosAndDraw(i,num);
+                    TransformPosAndDraw(i, num);
                 }
                 else
                 {
@@ -264,46 +269,48 @@ namespace DSPMarker
 
                     int UIheight = DSPGame.globalOption.uiLayoutHeight;
                     int UIwidth = UIheight * Screen.width / Screen.height;
+                    if (markerPool[num6].alwaysDisplay)
+                    {
 
-                    vector3.x = Mathf.Round(vector3.x);
-                    if (vector3.x < 30)
-                    {
-                        vector3.x = 30;
-                    }
-                    else if (vector3.x > UIwidth - 30)
-                    {
-                        vector3.x = UIwidth - 30;
-                    }
-
-                    vector3.y = Mathf.Round(vector3.y);
-                    if (vector3.y < 30)
-                    {
-                        vector3.y = 30;
-                    }
-                    else if (vector3.y > UIheight - 30)
-                    {
-                        vector3.y = UIheight - 30;
-                    }
-                    else if (Phys.RayCastSphere(localPosition, vector2 / magnitude, magnitude, Vector3.zero, realRadius, out rchcpu))
-                    {
-                        float num3 = vector3.y / (vector3.x - UIwidth / 2);
-                        float num4 = UIheight / (UIwidth / 2);
-                        if (num3 > num4)
+                        vector3.x = Mathf.Round(vector3.x);
+                        if (vector3.x < 30)
                         {
-                            //LogManager.Logger.LogInfo("num3 > num4");
-
+                            vector3.x = 30;
                         }
-                        else if (-num3 > num4)
+                        else if (vector3.x > UIwidth - 30)
                         {
-                            //LogManager.Logger.LogInfo("num3 < - num4");
-
+                            vector3.x = UIwidth - 30;
                         }
 
+                        vector3.y = Mathf.Round(vector3.y);
+                        if (vector3.y < 30)
+                        {
+                            vector3.y = 30;
+                        }
+                        else if (vector3.y > UIheight - 30)
+                        {
+                            vector3.y = UIheight - 30;
+                        }
+                        else if (Phys.RayCastSphere(localPosition, vector2 / magnitude, magnitude, Vector3.zero, realRadius, out rchcpu))
+                        {
+                            float num3 = vector3.y / (vector3.x - UIwidth / 2);
+                            float num4 = UIheight / (UIwidth / 2);
+                            if (num3 > num4)
+                            {
+                                //LogManager.Logger.LogInfo("num3 > num4");
+
+                            }
+                            else if (-num3 > num4)
+                            {
+                                //LogManager.Logger.LogInfo("num3 < - num4");
+
+                            }
 
 
-                        float num5 = vector3.y / num3;
 
+                            float num5 = vector3.y / num3;
 
+                        }
 
                     }
 

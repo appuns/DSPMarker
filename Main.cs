@@ -29,7 +29,7 @@ using crecheng.DSPModSave;
 namespace DSPMarker
 {
 
-    [BepInPlugin("Appun.DSP.plugin.Marker", "DSPMarker", "0.0.2")]
+    [BepInPlugin("Appun.DSP.plugin.Marker", "DSPMarker", "0.0.4")]
     [BepInProcess("DSPGAME.exe")]
     [BepInDependency(DSPModSavePlugin.MODGUID)]
 
@@ -73,7 +73,7 @@ namespace DSPMarker
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
 
             ////configの設定
-            DisableKeyTips = Config.Bind("UI", "DisableKeyTips", true, "Disable Key Tips on right side");
+            DisableKeyTips = Config.Bind("UI", "DisableKeyTips", false, "Disable Key Tips on right side");
             maxMarkers = Config.Bind("Marker", "maxMarker", 20, "Maximum number of markers");
             maxMarker = maxMarkers.Value;
             //alwaysDisplay = Config.Bind("General", "DisableKeyTips", true, "Disable Key Tips on right side");

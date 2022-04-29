@@ -582,7 +582,7 @@ namespace DSPMarker
 
         public static void onClickIconBox1()
         {
-            LogManager.Logger.LogInfo("---------------------------------------------------------onClickIconBox1");
+            //LogManager.Logger.LogInfo("---------------------------------------------------------onClickIconBox1");
 
             if (UISignalPicker.isOpened)
             {

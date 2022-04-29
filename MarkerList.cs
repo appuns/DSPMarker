@@ -43,6 +43,7 @@ namespace DSPMarker
 
         public static bool showList = true;
         public static bool editMode;
+        public static bool Guiding = false;
         //public static Sprite purgeIcon;
 
         //UI解像度計算
@@ -70,7 +71,7 @@ namespace DSPMarker
             markerButton.name = "markerButton";
             markerButton.transform.localPosition = new Vector3(0, 0, 0);
             markerButton.GetComponent<UIButton>().tips.tipTitle = "Marker List".Translate();
-            markerButton.GetComponent<UIButton>().tips.tipText = "Click to show/hide Marker List.\nRight Click to enter/exit Edit mode.".Translate();
+            markerButton.GetComponent<UIButton>().tips.tipText = "Click to show/hide Markers & List.\nRight Click to enter/exit Edit mode.".Translate();
             markerButton.GetComponent<UIButton>().tips.corner = 4;
             markerButton.GetComponent<UIButton>().tips.offset = new Vector2(-50, 20);
             markerButton.GetComponent<UIButton>().tips.width = 215;
@@ -240,8 +241,14 @@ namespace DSPMarker
                 }
             }else if (!GameMain.data.mainPlayer.sailing)
             {
+                if (Guiding)
+                {
+                    GameMain.mainPlayer.ClearOrders();
+                    Guiding = false;
+                    return;
+                }
                 //GameMain.mainPlayer.gizmo.orderGizmos.Clear();
-                Array.Clear(GameMain.mainPlayer.orders.orderQueue, 0, GameMain.mainPlayer.orders.orderQueue.Length);
+                //Array.Clear(GameMain.mainPlayer.orders.orderQueue, 0, GameMain.mainPlayer.orders.orderQueue.Length);
                 //LineGizmo.pool.Clear();
                 //CircleGizmo.pool.Clear();
 
@@ -278,6 +285,7 @@ namespace DSPMarker
                 lineGizmo.spherical = true;
                 lineGizmo.Open();
                 GameMain.mainPlayer.gizmo.orderGizmos.Add(lineGizmo);
+                Guiding = true;
 
             }
 
@@ -287,7 +295,7 @@ namespace DSPMarker
         //全ての右クリック
         public static void OnRightClick(GameObject obj)
         {
-            LogManager.Logger.LogInfo("--------------------------------------------------------obj.name : " + obj.name);
+            //LogManager.Logger.LogInfo("--------------------------------------------------------obj.name : " + obj.name);
             if (obj.name == "markerButton")
             {
                 if (!GameMain.data.mainPlayer.sailing)
