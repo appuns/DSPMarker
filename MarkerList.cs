@@ -71,7 +71,7 @@ namespace DSPMarker
             markerButton.name = "markerButton";
             markerButton.transform.localPosition = new Vector3(0, 0, 0);
             markerButton.GetComponent<UIButton>().tips.tipTitle = "Marker List".Translate();
-            markerButton.GetComponent<UIButton>().tips.tipText = "Click to show/hide Markers & List.\nRight Click to enter/exit Edit mode.".Translate();
+            markerButton.GetComponent<UIButton>().tips.tipText = "Click to show/hide Marker List.\nRight Click to enter/exit Edit mode.".Translate();
             markerButton.GetComponent<UIButton>().tips.corner = 4;
             markerButton.GetComponent<UIButton>().tips.offset = new Vector2(-50, 20);
             markerButton.GetComponent<UIButton>().tips.width = 215;

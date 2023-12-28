@@ -67,7 +67,7 @@ namespace DSPMarker
 
         //public static int number;
         public static Sprite emptySprite;
-        
+
         public static bool newOne;
 
 
@@ -103,7 +103,7 @@ namespace DSPMarker
                 pos = marker.pos;
                 iconID1 = marker.icon1ID;
                 iconID2 = marker.icon2ID;
-                
+
                 if (marker.icon1ID == 0)
                 {
                     sprite1 = emptySprite;
@@ -235,10 +235,12 @@ namespace DSPMarker
             colorTitle.GetComponent<Text>().fontSize = 14;
             colorTitle.GetComponent<RectTransform>().sizeDelta = new Vector3(100, 36, 0);
 
+            //LogManager.Logger.LogInfo("---------------------------------------------------------make EditorWindow 21");
+
             //色選択用オブジェクト枠
-            colorSelecter = Instantiate(GameObject.Find("UI Root/Overlay Canvas/In Game/Windows/Mecha Window/appearance/card-mask").gameObject, window.transform);
+            colorSelecter = Instantiate(GameObject.Find("UI Root/Overlay Canvas/Mecha Editor UI/Left Panel/scroll-view/Viewport/Left Panel Content/title-group/main-color-cards").gameObject, window.transform);
             colorSelecter.name = "colorSelecter"; ;
-            colorSelecter.transform.localPosition = new Vector3(115, -103, 0);
+            colorSelecter.transform.localPosition = new Vector3(200, -75, 0);
             colorSelecter.SetActive(true);
             int count = colorSelecter.transform.childCount;
             foreach (Transform n in colorSelecter.transform)
@@ -252,11 +254,14 @@ namespace DSPMarker
                 GameObject.Destroy(n.gameObject);
                 count--;
             }
+
+            //LogManager.Logger.LogInfo("---------------------------------------------------------make EditorWindow 22");
+
             for (int i = 0; i < 7; i++)
             {
                 colorBox[i] = Instantiate(colorSelecter.transform.Find("color").gameObject, colorSelecter.transform);
                 colorBox[i].name = "color" + i;
-                colorBox[i].transform.localPosition = new Vector3(-55 + 20 * i, 13.2f, 0);
+                colorBox[i].transform.localPosition = new Vector3(-135 + 20 * i, -13, 0);
                 colorBox[i].GetComponent<Image>().enabled = true;
                 colorBox[i].GetComponent<Image>().color = color[i];
                 colorBox[i].GetComponent<Shadow>().enabled = true;
@@ -303,7 +308,7 @@ namespace DSPMarker
             descTitle.name = "descTitle";
             descTitle.transform.localPosition = new Vector3(-65, -185, 0);
             descTitle.GetComponent<Text>().text = "Description".Translate();
-            
+
             //preview
             previewText = Instantiate(colorTitle, window.transform);
             previewText.name = "previewText";
@@ -327,6 +332,8 @@ namespace DSPMarker
             descBox.GetComponent<RectTransform>().sizeDelta = new Vector3(130, 70, 0);
             descBox.transform.localPosition = new Vector3(95, -205, 0);
             descBox.transform.localScale = new Vector3(0.7f, 0.7f, 0);
+            Destroy(descBox.GetComponent<UIButton>());
+
 
             //descBox.AddComponent<Outline>().effectDistance = new Vector2(2, -2);
             descBox.transform.Find("value-text").gameObject.GetComponent<Text>().text = "!TEST!";
@@ -488,6 +495,9 @@ namespace DSPMarker
                 markerPrefab.transform.Find("round/pinBaseIcon1").transform.localPosition = new Vector3(-30, 30, 0);
             }
 
+            checkBox1.transform.Find("checked").gameObject.GetComponent<Image>().enabled = alwaysDisplay;
+            checkBox2.transform.Find("checked").gameObject.GetComponent<Image>().enabled = throughPlanet;
+            checkBox3.transform.Find("checked").gameObject.GetComponent<Image>().enabled = ShowArrow;
 
 
         }
@@ -500,8 +510,8 @@ namespace DSPMarker
             {
                 return;
             }
-                var realRadius = GameMain.localPlanet.realRadius;
- 
+            var realRadius = GameMain.localPlanet.realRadius;
+
             MarkerPool.Marker marker = new MarkerPool.Marker();
             marker.planetID = GameMain.localPlanet.id;
             marker.icon1ID = iconID1;
@@ -512,7 +522,7 @@ namespace DSPMarker
             marker.throughPlanet = throughPlanet;
             marker.ShowArrow = ShowArrow;
             //var num = GameMain.localPlanet.id * 100 + ID;
-            
+
             if (!newOne)
             {
                 marker.pos = pos;
@@ -525,7 +535,7 @@ namespace DSPMarker
                 //var num = MarkerPool.markerCursor;
                 //LogManager.Logger.LogInfo("------------------------------------------------------------------MarkerPool.markerCursor : " + MarkerPool.markerCursor);
                 marker.pos = GameMain.mainPlayer.position;
-                MarkerPool.markerPool.Add(MarkerPool.markerCursor + 1 , marker);
+                MarkerPool.markerPool.Add(MarkerPool.markerCursor + 1, marker);
                 MarkerPool.markerIdInPlanet[marker.planetID].Add(MarkerPool.markerCursor + 1);
                 MarkerPool.markerCursor++;
             }

@@ -29,7 +29,7 @@ using crecheng.DSPModSave;
 namespace DSPMarker
 {
 
-    [BepInPlugin("Appun.DSP.plugin.Marker", "DSPMarker", "0.0.4")]
+    [BepInPlugin("Appun.DSP.plugin.Marker", "DSPMarker", "0.0.7")]
     [BepInProcess("DSPGAME.exe")]
     [BepInDependency(DSPModSavePlugin.MODGUID)]
 

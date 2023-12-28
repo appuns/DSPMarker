@@ -73,7 +73,13 @@ If you have any problems or suggestions, please contact DISCORD MSP Modding serv
 不具合、改善案などありましたら、DISCORD「DysonSphereProgram_Jp」サーバー**Appun#8284**に連絡、または、GitHubの該当リポジトリでIssueを作成してください。<br>
 
 ## Change Log 更新履歴
-### v0.0.3
+### v0.0.7
+- Supported the game version 0.10.28.21014. ゲームバージョン0.10.28.21014に対応しました。
+### v0.0.6
+- Fixed check box bug in marker editor. マーカーエディターのチェックボックスの問題を解消しました。
+### v0.0.5
+- Remove unnecessary tip display. 不要なヒント表示を削除しました。
+### v0.0.4
 - By clicking the marker button, you can now toggle the display of markers and guide arrows as well as the marker list.マーカーボタンをクリックすることで、マーカーリストだけでなく、マーカーやガイド矢印の表示も切り替えられるようになりました。
 - Automatic movement can now be canceled by clicking on the marker list.マーカーリストをクリックすることで自動移動をキャンセルできるようになりました。
 - Confirmed that it is compatible with game version 0.9.25.12077. ゲームバージョン0.9.25.12077に対応していることを確認しました。
