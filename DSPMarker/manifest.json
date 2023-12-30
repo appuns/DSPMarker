@@ -1,6 +1,6 @@
 {
   "name": "DSPMarker",
-  "version_number": "0.0.7",
+  "version_number": "0.0.8",
   "website_url": "https://github.com/appuns/DSPMarker",
   "description": "Allows you to place markers to indicate the position of something.There are guide arrows that indicates the direction of the marker.This don't affect achievements or milestones. 施設等の位置を示すマーカーを配置できます。マーカーの方向を示すガイド矢印が表示されます。実績やマイルストーンには影響しません。",
   "dependencies": [

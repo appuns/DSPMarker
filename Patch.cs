@@ -72,6 +72,8 @@ namespace DSPMarker
             MarkerPool.Update();
             ArrowPool.Update();
             MarkerList.Refresh();
+            MarkerPool.Refresh();
+
         }
 
         //惑星を去ったら

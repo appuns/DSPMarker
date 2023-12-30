@@ -29,7 +29,7 @@ using crecheng.DSPModSave;
 namespace DSPMarker
 {
 
-    [BepInPlugin("Appun.DSP.plugin.Marker", "DSPMarker", "0.0.7")]
+    [BepInPlugin("Appun.DSP.plugin.Marker", "DSPMarker", "0.0.8")]
     [BepInProcess("DSPGAME.exe")]
     [BepInDependency(DSPModSavePlugin.MODGUID)]
 
@@ -141,6 +141,13 @@ namespace DSPMarker
                 //LogManager.Logger.LogInfo("---------------------------------------------------------GameMain.localPlanet : non");
                 return;
             }
+            //if (DSPGame.UIGame.viewMode == EViewMode.DysonEditor)
+            //{
+            //    MarkerList.markerList.SetActive(false);
+            //    MarkerPrefab.markerGroup.SetActive(false);
+
+            //    return;
+            //}
 
             if (UIGame.viewMode == EViewMode.Starmap || UIGame.viewMode == EViewMode.MilkyWay || UIGame.viewMode == EViewMode.DysonEditor)
             // if (UIGame.viewMode != EViewMode.Sail && UIGame.viewMode != EViewMode.Normal && UIGame.viewMode != EViewMode.Globe && UIGame.viewMode != EViewMode.Build)

@@ -73,6 +73,10 @@ If you have any problems or suggestions, please contact DISCORD MSP Modding serv
 不具合、改善案などありましたら、DISCORD「DysonSphereProgram_Jp」サーバー**Appun#8284**に連絡、または、GitHubの該当リポジトリでIssueを作成してください。<br>
 
 ## Change Log 更新履歴
+### v0.0.8
+- Supported the game Version 0.10.28.21172. ゲームバージョン0.10.28.21172に対応しています。
+- Adjusted the button position. ボタンの位置を調整しました。
+- Fixed a bug where the contents were not updated when moving to another planet. 他の惑星へ移動したときの内容が更新されないバグを解消しました。
 ### v0.0.7
 - Supported the game version 0.10.28.21014. ゲームバージョン0.10.28.21014に対応しました。
 ### v0.0.6

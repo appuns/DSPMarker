@@ -63,7 +63,7 @@ namespace DSPMarker
             markerList = new GameObject();
             markerList.name = "MarkerList";
             markerList.transform.SetParent(GameObject.Find("UI Root/Overlay Canvas/In Game/Windows").transform);
-            markerList.transform.localPosition = new Vector3(UIwidth / 2 - 60, UIheight / 2 - 70, 0);
+            markerList.transform.localPosition = new Vector3(UIwidth / 2 - 60, UIheight / 2 - 30, 0);
             markerList.transform.localScale = new Vector3(1, 1, 1);
 
             //リストの表示切替用ボタンの作成
